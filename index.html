@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Rule Syntax Editor - ModelSpecs_Simple Implementation</title>
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/msg/en.js"></script>
+  <!-- Explicitly include the JavaScript generator -->
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+  <link rel="stylesheet" href="enhanced-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="editor-title">Rule Syntax Editor (ModelSpecs_Simple)</h1>
+      <div class="actions">
+        <div class="language-selector">
+          <label for="language-select" id="language-label">Language:</label>
+          <select id="language-select">
+            <option value="en" selected>English</option>
+            <option value="nl">Nederlands</option>
+          </select>
+        </div>
+        <button id="saveButton">Save</button>
+        <button id="loadButton">Load</button>
+        <button id="generateButton">Generate Rule Text</button>
+      </div>
+    </header>
+    
+    <main class="vertical-layout">
+      <div id="blocklyDiv"></div>
+      <div class="output-container">
+        <h2 id="output-title">Generated Rule</h2>
+        <pre id="output"></pre>
+      </div>
+    </main>
+  </div>
+
+  <!-- Blockly toolbox definition with optimized categorization -->
+  <xml id="toolbox" style="display: none">
+    <category id="category-rules" name="Rules" colour="210">
+      <block type="business_rule"></block>
+    </category>
+    
+    <category id="category-actions" name="Actions" colour="180">
+      <block type="assignment_action"></block>
+      <block type="compliance_action"></block>
+    </category>
+    
+    <category id="category-objects" name="Objects" colour="150">
+      <block type="fact_reference"></block>
+      <block type="role"></block>
+      <block type="attribute"></block>
+      <block type="characteristic"></block>
+    </category>
+    
+    <category id="category-expressions" name="Expressions" colour="290">
+      <block type="expression"></block>
+      <category id="category-math" name="Math" colour="285">
+        <block type="math_operation"></block>
+        <block type="minimum_maximum"></block>
+        <block type="rounding"></block>
+      </category>
+    </category>
+    
+    <category id="category-conditions" name="Conditions" colour="230">
+      <block type="simple_condition"></block>
+      <block type="complex_condition"></block>
+      <block type="nested_complex_condition"></block>
+    </category>
+    
+    <category id="category-values" name="Values" colour="330">
+      <block type="literal"></block>
+      <block type="boolean_literal"></block>
+      <block type="parameter_reference"></block>
+    </category>
+    
+    <category id="category-examples" name="Examples" colour="65">
+      <button id="load-example-distance" text="Load Example: Distance Init" callbackKey="loadDistanceInitExample"></button>
+      <button id="load-example-tax" text="Load Example: Tax Calculation" callbackKey="loadTaxCalculationExample"></button>
+      <button id="load-example-compliance" text="Load Example: Compliance Rule" callbackKey="loadComplianceRuleExample"></button>
+    </category>
+  </xml>
+
+  <!-- Load scripts in the correct order -->
+  <script src="config.js"></script>
+  <script src="nl-config.js"></script>
+  <script src="block-definitions-with-actions.js"></script>
+  <script src="block-generators-with-actions-complete.js"></script>
+  <script src="example-rules-with-actions.js"></script>
+  <script src="main-js-with-actions.js"></script>
+  
+  <!-- Language handling script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Language selector functionality
+      const languageSelect = document.getElementById('language-select');
+      
+      // Set initial language from localStorage if present
+      const savedLanguage = localStorage.getItem('preferredLanguage');
+      if (savedLanguage) {
+        languageSelect.value = savedLanguage;
+        if (savedLanguage === 'nl') {
+          setDutchLanguage();
+        }
+      }
+      
+      // Handle language changes
+      languageSelect.addEventListener('change', function() {
+        const selectedLanguage = this.value;
+        localStorage.setItem('preferredLanguage', selectedLanguage);
+        
+        if (selectedLanguage === 'nl') {
+          setDutchLanguage();
+        } else {
+          setEnglishLanguage();
+        }
+        
+        // Refresh the workspace to update blocks
+        if (window.workspace) {
+          window.workspace.refresh();
+        }
+      });
+      
+      // Function to set language to English
+      function setEnglishLanguage() {
+        document.getElementById('editor-title').textContent = 'Rule Syntax Editor (ModelSpecs_Simple)';
+        document.getElementById('output-title').textContent = 'Generated Rule';
+        document.getElementById('language-label').textContent = 'Language:';
+        document.getElementById('saveButton').textContent = 'Save';
+        document.getElementById('loadButton').textContent = 'Load';
+        document.getElementById('generateButton').textContent = 'Generate Rule Text';
+        
+        // Update categories
+        document.getElementById('category-rules').setAttribute('name', 'Rules');
+        document.getElementById('category-actions').setAttribute('name', 'Actions');
+        document.getElementById('category-objects').setAttribute('name', 'Objects');
+        document.getElementById('category-expressions').setAttribute('name', 'Expressions');
+        document.getElementById('category-math').setAttribute('name', 'Math');
+        document.getElementById('category-conditions').setAttribute('name', 'Conditions');
+        document.getElementById('category-values').setAttribute('name', 'Values');
+        document.getElementById('category-examples').setAttribute('name', 'Examples');
+        
+        // Update example buttons
+        document.getElementById('load-example-distance').setAttribute('text', 'Load Example: Distance Init');
+        document.getElementById('load-example-tax').setAttribute('text', 'Load Example: Tax Calculation');
+        document.getElementById('load-example-compliance').setAttribute('text', 'Load Example: Compliance Rule');
+        
+        console.log('Language set to English');
+      }
+    });
+  </script>
+</body>
+</html>
