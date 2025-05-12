@@ -7,7 +7,7 @@
   <script src="https://unpkg.com/blockly/msg/en.js"></script>
   <!-- Explicitly include the JavaScript generator -->
   <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-  <link rel="stylesheet" href="enhanced-styles.css">
+  <link rel="stylesheet" href="enhanced-styles-vertical.css">
 </head>
 <body>
   <div class="container">
@@ -84,71 +84,11 @@
 
   <!-- Load scripts in the correct order -->
   <script src="config.js"></script>
-  <script src="nl-config.js"></script>
   <script src="block-definitions-with-actions.js"></script>
   <script src="block-generators-with-actions-complete.js"></script>
   <script src="example-rules-with-actions.js"></script>
   <script src="main-js-with-actions.js"></script>
-  
-  <!-- Language handling script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Language selector functionality
-      const languageSelect = document.getElementById('language-select');
-      
-      // Set initial language from localStorage if present
-      const savedLanguage = localStorage.getItem('preferredLanguage');
-      if (savedLanguage) {
-        languageSelect.value = savedLanguage;
-        if (savedLanguage === 'nl') {
-          setDutchLanguage();
-        }
-      }
-      
-      // Handle language changes
-      languageSelect.addEventListener('change', function() {
-        const selectedLanguage = this.value;
-        localStorage.setItem('preferredLanguage', selectedLanguage);
-        
-        if (selectedLanguage === 'nl') {
-          setDutchLanguage();
-        } else {
-          setEnglishLanguage();
-        }
-        
-        // Refresh the workspace to update blocks
-        if (window.workspace) {
-          window.workspace.refresh();
-        }
-      });
-      
-      // Function to set language to English
-      function setEnglishLanguage() {
-        document.getElementById('editor-title').textContent = 'Rule Syntax Editor (ModelSpecs_Simple)';
-        document.getElementById('output-title').textContent = 'Generated Rule';
-        document.getElementById('language-label').textContent = 'Language:';
-        document.getElementById('saveButton').textContent = 'Save';
-        document.getElementById('loadButton').textContent = 'Load';
-        document.getElementById('generateButton').textContent = 'Generate Rule Text';
-        
-        // Update categories
-        document.getElementById('category-rules').setAttribute('name', 'Rules');
-        document.getElementById('category-actions').setAttribute('name', 'Actions');
-        document.getElementById('category-objects').setAttribute('name', 'Objects');
-        document.getElementById('category-expressions').setAttribute('name', 'Expressions');
-        document.getElementById('category-math').setAttribute('name', 'Math');
-        document.getElementById('category-conditions').setAttribute('name', 'Conditions');
-        document.getElementById('category-values').setAttribute('name', 'Values');
-        document.getElementById('category-examples').setAttribute('name', 'Examples');
-        
-        // Update example buttons
-        document.getElementById('load-example-distance').setAttribute('text', 'Load Example: Distance Init');
-        document.getElementById('load-example-tax').setAttribute('text', 'Load Example: Tax Calculation');
-        document.getElementById('load-example-compliance').setAttribute('text', 'Load Example: Compliance Rule');
-        
-        console.log('Language set to English');
-      }
-    });
-  </script>
+  <!-- Load localization last -->
+  <script src="complete-localization.js"></script>
 </body>
 </html>
