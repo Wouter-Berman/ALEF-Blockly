@@ -2,93 +2,135 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Rule Syntax Editor - ModelSpecs_Simple Implementation</title>
+  <title>Regeleditor met Objectmodel - ModelSpecs Implementatie</title>
   <script src="https://unpkg.com/blockly/blockly.min.js"></script>
   <script src="https://unpkg.com/blockly/msg/en.js"></script>
-  <!-- Explicitly include the JavaScript generator -->
+  <!-- Expliciet de JavaScript generator toevoegen -->
   <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-  <link rel="stylesheet" href="enhanced-styles-vertical.css">
+  <link rel="stylesheet" href="styles-with-tabs.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1 id="editor-title">Rule Syntax Editor (ModelSpecs_Simple)</h1>
+      <h1>Regel Syntax & Objectmodel Editor</h1>
+      <div class="tabs">
+        <button id="rulesTab" class="tab-button active">Regels</button>
+        <button id="objectModelTab" class="tab-button">Objectmodel</button>
+      </div>
       <div class="actions">
-        <div class="language-selector">
-          <label for="language-select" id="language-label">Language:</label>
-          <select id="language-select">
-            <option value="en" selected>English</option>
-            <option value="nl">Nederlands</option>
-          </select>
-        </div>
-        <button id="saveButton">Save</button>
-        <button id="loadButton">Load</button>
-        <button id="generateButton">Generate Rule Text</button>
+        <button id="saveButton">Opslaan</button>
+        <button id="loadButton">Laden</button>
+        <button id="generateButton">Genereer Code</button>
       </div>
     </header>
     
     <main class="vertical-layout">
-      <div id="blocklyDiv"></div>
-      <div class="output-container">
-        <h2 id="output-title">Generated Rule</h2>
-        <pre id="output"></pre>
+      <!-- Regels werkruimte -->
+      <div id="rulesWorkspace" class="workspace active">
+        <div id="blocklyDivRules" class="blockly-container"></div>
+        <div class="output-container">
+          <h2>Gegenereerde Regel</h2>
+          <pre id="outputRules"></pre>
+        </div>
+      </div>
+      
+      <!-- Objectmodel werkruimte -->
+      <div id="objectModelWorkspace" class="workspace">
+        <div id="blocklyDivObjectModel" class="blockly-container"></div>
+        <div class="output-container">
+          <h2>Gegenereerd Objectmodel</h2>
+          <pre id="outputObjectModel"></pre>
+        </div>
       </div>
     </main>
   </div>
 
-  <!-- Blockly toolbox definition with optimized categorization -->
-  <xml id="toolbox" style="display: none">
-    <category id="category-rules" name="Rules" colour="210">
+  <!-- Blockly toolbox definitie voor regels -->
+  <xml id="toolboxRules" style="display: none">
+    <category name="Regels" colour="210">
       <block type="business_rule"></block>
     </category>
     
-    <category id="category-actions" name="Actions" colour="180">
+    <category name="Acties" colour="180">
       <block type="assignment_action"></block>
       <block type="compliance_action"></block>
     </category>
     
-    <category id="category-objects" name="Objects" colour="150">
+    <category name="Objecten" colour="150">
       <block type="fact_reference"></block>
       <block type="role"></block>
       <block type="attribute"></block>
       <block type="characteristic"></block>
     </category>
     
-    <category id="category-expressions" name="Expressions" colour="290">
+    <category name="Expressies" colour="290">
       <block type="expression"></block>
-      <category id="category-math" name="Math" colour="285">
+      <category name="Wiskunde" colour="285">
         <block type="math_operation"></block>
         <block type="minimum_maximum"></block>
         <block type="rounding"></block>
       </category>
     </category>
     
-    <category id="category-conditions" name="Conditions" colour="230">
+    <category name="Voorwaarden" colour="230">
       <block type="simple_condition"></block>
       <block type="complex_condition"></block>
       <block type="nested_complex_condition"></block>
     </category>
     
-    <category id="category-values" name="Values" colour="330">
+    <category name="Waarden" colour="330">
       <block type="literal"></block>
       <block type="boolean_literal"></block>
       <block type="parameter_reference"></block>
     </category>
     
-    <category id="category-examples" name="Examples" colour="65">
-      <button id="load-example-distance" text="Load Example: Distance Init" callbackKey="loadDistanceInitExample"></button>
-      <button id="load-example-tax" text="Load Example: Tax Calculation" callbackKey="loadTaxCalculationExample"></button>
-      <button id="load-example-compliance" text="Load Example: Compliance Rule" callbackKey="loadComplianceRuleExample"></button>
+    <category name="Voorbeelden" colour="65">
+      <button text="Laad voorbeeld: Afstand initialisatie" callbackKey="loadDistanceInitExample"></button>
+      <button text="Laad voorbeeld: Belastingberekening" callbackKey="loadTaxCalculationExample"></button>
+      <button text="Laad voorbeeld: Compliance regel" callbackKey="loadComplianceRuleExample"></button>
+    </category>
+  </xml>
+  
+  <!-- Blockly toolbox definitie voor objectmodel -->
+  <xml id="toolboxObjectModel" style="display: none">
+    <category name="Objectmodel" colour="45">
+      <block type="object_model"></block>
+    </category>
+    
+    <category name="Objecttypes" colour="60">
+      <block type="object_type"></block>
+      <block type="characteristic_def"></block>
+      <block type="attribute_def"></block>
+    </category>
+    
+    <category name="Relaties" colour="120">
+      <block type="relationship_type"></block>
+    </category>
+    
+    <category name="Types" colour="140">
+      <block type="type_definition"></block>
+      <block type="type_definition_ref"></block>
+      <block type="data_type"></block>
+      <block type="number_specification"></block>
+    </category>
+    
+    <category name="Parameters" colour="160">
+      <block type="parameter"></block>
+    </category>
+    
+    <category name="Voorbeelden" colour="65">
+      <button text="Laad voorbeeld: Vlucht objectmodel" callbackKey="loadFlightObjectModelExample"></button>
     </category>
   </xml>
 
-  <!-- Load scripts in the correct order -->
+  <!-- Scripts in de juiste volgorde laden -->
   <script src="config.js"></script>
   <script src="block-definitions-with-actions.js"></script>
   <script src="block-generators-with-actions-complete.js"></script>
+  <script src="object-model-blocks.js"></script>
+  <script src="object-model-generators.js"></script>
   <script src="example-rules-with-actions.js"></script>
-  <script src="main-js-with-actions.js"></script>
-  <!-- Load localization last -->
-  <script src="complete-localization.js"></script>
+  <script src="example-object-models.js"></script>
+  <script src="main-with-tabs.js"></script>
 </body>
 </html>
