@@ -75,11 +75,9 @@ javascript.javascriptGenerator.forBlock['compliance_action'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-// Code generator voor fact reference blok
-javascript.javascriptGenerator.forBlock['fact_reference'] = function(block) {
+// Code generator voor het object blok
+javascript.javascriptGenerator.forBlock['object'] = function(block) {
   var objectType = block.getFieldValue('OBJECT_TYPE');
-  var roles = Blockly.JavaScript.statementToCode(block, 'ROLES');
-  var attribute = Blockly.JavaScript.valueToCode(block, 'ATTRIBUTE', Blockly.JavaScript.ORDER_ATOMIC);
   
   // Vertaal interne OBJECT_TYPE constante naar weergavenaam (in het Nederlands)
   var objectTypeMap = {
@@ -89,20 +87,35 @@ javascript.javascriptGenerator.forBlock['fact_reference'] = function(block) {
     'UITWORPMELDING': 'de uitworpmelding'
   };
   
+  var code = objectTypeMap[objectType] || objectType;
+  
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+// Code generator voor fact reference blok (aangepast om optioneel object te gebruiken)
+javascript.javascriptGenerator.forBlock['fact_reference'] = function(block) {
+  var object = Blockly.JavaScript.valueToCode(block, 'OBJECT', Blockly.JavaScript.ORDER_ATOMIC);
+  var roles = Blockly.JavaScript.statementToCode(block, 'ROLES');
+  var attribute = Blockly.JavaScript.valueToCode(block, 'ATTRIBUTE', Blockly.JavaScript.ORDER_ATOMIC);
+  
   var code = '';
   
   // Als we een attribuut hebben, voeg het toe
   if (attribute) {
     if (roles && roles.trim()) {
       code = attribute + ' van ' + roles.trim();
+    } else if (object) {
+      code = attribute + ' van ' + object;
     } else {
-      code = attribute + ' van ' + objectTypeMap[objectType];
+      code = attribute;
     }
   } else {
     if (roles && roles.trim()) {
       code = roles.trim();
+    } else if (object) {
+      code = object;
     } else {
-      code = objectTypeMap[objectType];
+      code = 'ontbrekende feitreferentie';
     }
   }
   
@@ -357,6 +370,7 @@ function verifyCodeGenerators() {
     'business_rule',
     'assignment_action',
     'compliance_action',
+    'object',
     'fact_reference',
     'role',
     'attribute',

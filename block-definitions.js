@@ -117,12 +117,10 @@ Blockly.defineBlocksWithJsonArray([
     "helpUrl": ""
   },
   
-  // Fact reference block
+  // Object block (new)
   {
-    "type": "fact_reference",
+    "type": "object",
     "message0": "Object: %1",
-    "message1": "Roles %1",
-    "message2": "Attribute %1",
     "args0": [
       {
         "type": "field_dropdown",
@@ -133,6 +131,25 @@ Blockly.defineBlocksWithJsonArray([
           ["contingent treinmiles", "CONTINGENT_TREINMILES"],
           ["uitworpmelding", "UITWORPMELDING"]
         ]
+      }
+    ],
+    "output": "object",
+    "colour": 130,
+    "tooltip": "Reference to an object",
+    "helpUrl": ""
+  },
+  
+  // Fact reference block (modified to have optional object)
+  {
+    "type": "fact_reference",
+    "message0": "Object: %1",
+    "message1": "Roles %1",
+    "message2": "Attribute %1",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "OBJECT",
+        "check": "object"
       }
     ],
     "args1": [
