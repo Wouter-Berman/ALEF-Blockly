@@ -139,23 +139,24 @@ function showObjectModelWorkspace() {
 document.getElementById('rulesTab').addEventListener('click', showRulesWorkspace);
 document.getElementById('objectModelTab').addEventListener('click', showObjectModelWorkspace);
 
-// Functie om een werkruimte op te slaan
+// Functie om een werkruimte op te slaan (bijgewerkt voor JSON serialisatie)
 function saveWorkspace() {
   try {
-    let xmlText, fileName;
+    let state, fileName;
     
     if (currentWorkspaceType === 'rules') {
-      const xml = Blockly.Xml.workspaceToDom(workspaceRules);
-      xmlText = Blockly.Xml.domToText(xml);
-      fileName = 'regel.xml';
+      state = Blockly.serialization.workspaces.save(workspaceRules);
+      fileName = 'regel.json';
     } else {
-      const xml = Blockly.Xml.workspaceToDom(workspaceObjectModel);
-      xmlText = Blockly.Xml.domToText(xml);
-      fileName = 'objectmodel.xml';
+      state = Blockly.serialization.workspaces.save(workspaceObjectModel);
+      fileName = 'objectmodel.json';
     }
     
+    // Converteer het state-object naar een JSON-string
+    const jsonText = JSON.stringify(state, null, 2);
+    
     // Maak een blob en downloadlink
-    const blob = new Blob([xmlText], {type: 'text/xml'});
+    const blob = new Blob([jsonText], {type: 'application/json'});
     const a = document.createElement('a');
     a.download = fileName;
     a.href = URL.createObjectURL(blob);
@@ -166,11 +167,11 @@ function saveWorkspace() {
   }
 }
 
-// Functie om een werkruimte te laden
+// Functie om een werkruimte te laden (bijgewerkt voor JSON serialisatie)
 function loadWorkspace() {
   const input = document.createElement('input');
   input.type = 'file';
-  input.accept = '.xml';
+  input.accept = '.json';
   
   input.onchange = e => {
     const file = e.target.files[0];
@@ -178,15 +179,16 @@ function loadWorkspace() {
     
     reader.onload = function(e) {
       try {
-        const xml = Blockly.Xml.textToDom(e.target.result);
+        // Parse de JSON-string naar een object
+        const state = JSON.parse(e.target.result);
         
         // Controleer welke werkruimte actief is en laad daarin
         if (currentWorkspaceType === 'rules') {
           workspaceRules.clear();
-          Blockly.Xml.domToWorkspace(xml, workspaceRules);
+          Blockly.serialization.workspaces.load(state, workspaceRules);
         } else {
           workspaceObjectModel.clear();
-          Blockly.Xml.domToWorkspace(xml, workspaceObjectModel);
+          Blockly.serialization.workspaces.load(state, workspaceObjectModel);
         }
         
         // Genereer code
