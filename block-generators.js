@@ -48,8 +48,21 @@ javascript.javascriptGenerator.forBlock['business_rule'] = function(block) {
 javascript.javascriptGenerator.forBlock['assignment_action'] = function(block) {
   var target = Blockly.JavaScript.valueToCode(block, 'TARGET', Blockly.JavaScript.ORDER_ATOMIC) || 'ontbrekend doel';
   var source = Blockly.JavaScript.valueToCode(block, 'SOURCE', Blockly.JavaScript.ORDER_ATOMIC) || 'ontbrekende bron';
-  
-  var code = target + ' moet ' + source;
+ 
+  // Controleer het type van de source blok
+  var sourceBlock = block.getInputTargetBlock('SOURCE');
+  var assignmentPhrase = 'moet gesteld worden op'; // Default voor literal values en fact references
+ 
+
+  if (sourceBlock) {
+    var sourceType = sourceBlock.type;
+    // Als het een math_operation of expression is, gebruik dan 'berekend worden als'
+    if (sourceType === 'math_operation' || sourceType === 'expression') {
+      assignmentPhrase = 'moet berekend worden als';
+    }
+  }
+
+  var code = target + ' ' + assignmentPhrase + ' ' + source;
   
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
@@ -217,7 +230,7 @@ javascript.javascriptGenerator.forBlock['simple_condition'] = function(block) {
     'LESS_THAN_EQUALS': 'kleiner of gelijk is aan'
   };
   
-  var code = left + ' ' + (operatorMap[operator] || operator) + ' ' + right;
+  var code = left + ' ' + (operatorMap[operator] || operator) + ' ' + right +'\n';
   
   return code;
 };
