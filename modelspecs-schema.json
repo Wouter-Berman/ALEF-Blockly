@@ -1,0 +1,565 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Rule Document",
+  "description": "Schema for rule documents following the ModelSpecs format",
+  "type": "object",
+  "required": ["objectModel", "ruleModel"],
+  "properties": {
+    "objectModel": {
+      "type": "object",
+      "required": ["objectTypes", "relationshipTypes", "typeDefinitions", "parameters"],
+      "properties": {
+        "objectTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/objectType"
+          }
+        },
+        "relationshipTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relationshipType"
+          }
+        },
+        "typeDefinitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/typeDefinition"
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/parameter"
+          }
+        }
+      }
+    },
+    "ruleModel": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ruleGroup"
+      }
+    }
+  },
+  "definitions": {
+    "objectType": {
+      "type": "object",
+      "required": ["definiteArticle", "objectName"],
+      "properties": {
+        "definiteArticle": {
+          "type": "string",
+          "enum": ["de", "het"]
+        },
+        "objectName": {
+          "type": "string"
+        },
+        "animate": {
+          "type": "boolean",
+          "default": false
+        },
+        "characteristics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/characteristic"
+          }
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/attribute"
+          }
+        }
+      }
+    },
+    "characteristic": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["definiteArticle", "characteristicName", "type"],
+          "properties": {
+            "definiteArticle": {
+              "type": "string",
+              "enum": ["de", "het"]
+            },
+            "characteristicName": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["characteristic", "characteristic (possessive)"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["isAdjective", "characteristicName"],
+          "properties": {
+            "isAdjective": {
+              "type": "boolean",
+              "enum": [true]
+            },
+            "characteristicName": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["characteristic (adjective)"]
+            }
+          }
+        }
+      ]
+    },
+    "attribute": {
+      "type": "object",
+      "required": ["definiteArticle", "attributeName", "attributeType"],
+      "properties": {
+        "definiteArticle": {
+          "type": "string",
+          "enum": ["de", "het"]
+        },
+        "attributeName": {
+          "type": "string"
+        },
+        "attributeType": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/dataType" 
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    "relationshipType": {
+      "type": "object",
+      "required": ["relationshipTypeName", "roles", "relationshipString"],
+      "properties": {
+        "relationshipTypeName": {
+          "type": "string"
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["roleName", "objectName", "roleMultiplicity"],
+            "properties": {
+              "roleName": {
+                "type": "string"
+              },
+              "objectName": {
+                "type": "string"
+              },
+              "roleMultiplicity": {
+                "type": "string",
+                "enum": ["one", "many"]
+              }
+            }
+          }
+        },
+        "relationshipString": {
+          "type": "string"
+        }
+      }
+    },
+    "typeDefinition": {
+      "type": "object",
+      "required": ["typeDefinitionName", "dataType"],
+      "properties": {
+        "typeDefinitionName": {
+          "type": "string"
+        },
+        "dataType": {
+          "$ref": "#/definitions/dataType"
+        }
+      }
+    },
+    "dataType": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/numericDataType"
+        },
+        {
+          "$ref": "#/definitions/percentageDataType"
+        },
+        {
+          "$ref": "#/definitions/textDataType"
+        },
+        {
+          "$ref": "#/definitions/booleanDataType"
+        },
+        {
+          "$ref": "#/definitions/dateTimeDataType"
+        }
+      ]
+    },
+    "numericDataType": {
+      "type": "object",
+      "required": ["type", "numberSpecification"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["numeric"]
+        },
+        "numberSpecification": {
+          "$ref": "#/definitions/numberSpecification"
+        },
+        "unit": {
+          "type": "string"
+        }
+      }
+    },
+    "percentageDataType": {
+      "type": "object",
+      "required": ["type", "numberSpecification"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["percentage"]
+        },
+        "numberSpecification": {
+          "$ref": "#/definitions/numberSpecification"
+        },
+        "unit": {
+          "type": "string"
+        }
+      }
+    },
+    "textDataType": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text"]
+        }
+      }
+    },
+    "booleanDataType": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["boolean"]
+        }
+      }
+    },
+    "dateTimeDataType": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["date in days", "date and time in milliseconds"]
+        }
+      }
+    },
+    "numberSpecification": {
+      "type": "object",
+      "required": ["numberType"],
+      "properties": {
+        "sign": {
+          "type": "string",
+          "enum": ["negative", "non-negative", "positive"]
+        },
+        "numberType": {
+          "type": "string",
+          "enum": ["integer", "number"]
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "required": ["definiteArticle", "parameterName", "parameterType"],
+      "properties": {
+        "definiteArticle": {
+          "type": "string",
+          "enum": ["de", "het"]
+        },
+        "parameterName": {
+          "type": "string"
+        },
+        "parameterType": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/dataType" 
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    "ruleGroup": {
+      "type": "object",
+      "required": ["ruleGroupName", "ruleSets"],
+      "properties": {
+        "ruleGroupName": {
+          "type": "string"
+        },
+        "ruleSets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ruleSet"
+          }
+        }
+      }
+    },
+    "ruleSet": {
+      "type": "object",
+      "required": ["ruleSetName", "businessRules"],
+      "properties": {
+        "ruleSetName": {
+          "type": "string"
+        },
+        "businessRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/businessRule"
+          }
+        }
+      }
+    },
+    "businessRule": {
+      "type": "object",
+      "required": ["metadata", "regelspraakRule"],
+      "properties": {
+        "metadata": {
+          "$ref": "#/definitions/ruleMetadata"
+        },
+        "regelspraakRule": {
+          "$ref": "#/definitions/regelspraakRule"
+        }
+      }
+    },
+    "ruleMetadata": {
+      "type": "object",
+      "required": ["ruleName", "ruleId", "ruleValidity"],
+      "properties": {
+        "ruleName": {
+          "type": "string"
+        },
+        "ruleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ruleValidity": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["always"]
+            },
+            {
+              "type": "object",
+              "required": ["validFrom"],
+              "properties": {
+                "validFrom": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "validUntil": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "regelspraakRule": {
+      "type": "object",
+      "required": ["target", "operator", "source"],
+      "properties": {
+        "target": {
+          "$ref": "#/definitions/factReference"
+        },
+        "operator": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/assignmentOperator"
+            },
+            {
+              "$ref": "#/definitions/comparisonOperator"
+            }
+          ]
+        },
+        "source": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/literal"
+            },
+            {
+              "$ref": "#/definitions/factReference"
+            },
+            {
+              "$ref": "#/definitions/expression"
+            }
+          ]
+        },
+        "condition": {
+          "$ref": "#/definitions/condition"
+        }
+      }
+    },
+    "factReference": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": ["object"],
+          "properties": {
+            "object": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "required": ["role"],
+          "properties": {
+            "role": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "required": ["characteristic"],
+          "properties": {
+            "characteristic": {
+              "type": "string"
+            },
+            "roles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "attribute": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "literal": {
+      "type": "string"
+    },
+    "expression": {
+      "type": "object",
+      "required": ["function", "parameters"],
+      "properties": {
+        "function": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/literal"
+              },
+              {
+                "$ref": "#/definitions/factReference"
+              },
+              {
+                "$ref": "#/definitions/expression"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "assignmentOperator": {
+      "type": "string",
+      "enum": [":="]
+    },
+    "comparisonOperator": {
+      "type": "string",
+      "enum": [">", "<", "<=", ">=", "==", "<>"]
+    },
+    "condition": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/simpleCondition"
+        },
+        {
+          "$ref": "#/definitions/complexCondition"
+        }
+      ]
+    },
+    "simpleCondition": {
+      "type": "object",
+      "required": ["factReference", "operator", "value"],
+      "properties": {
+        "factReference": {
+          "$ref": "#/definitions/factReference"
+        },
+        "operator": {
+          "$ref": "#/definitions/comparisonOperator"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/literal"
+            },
+            {
+              "$ref": "#/definitions/factReference"
+            },
+            {
+              "$ref": "#/definitions/expression"
+            }
+          ]
+        }
+      }
+    },
+    "complexCondition": {
+      "type": "object",
+      "required": ["comparisonMultiplicity", "conditions"],
+      "properties": {
+        "comparisonMultiplicity": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/unnumberedComparisonMultiplicity"
+            },
+            {
+              "$ref": "#/definitions/numberedComparisonMultiplicity"
+            }
+          ]
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/condition"
+          }
+        }
+      }
+    },
+    "unnumberedComparisonMultiplicity": {
+      "type": "string",
+      "enum": ["all", "none", "any"]
+    },
+    "numberedComparisonMultiplicity": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["at least", "exactly", "at most"]
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}
