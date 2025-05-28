@@ -193,10 +193,14 @@ javascript.javascriptGenerator.forBlock['number_specification'] = function(block
   }
   
   // Voeg nummertype toe
-  code += numberType;
+   var numberTypeMap = {
+    'INTEGER': 'geheel getal',
+    'NUMBER': 'getal'
+  };
+  code += numberTypeMap[numberType];
   
   // Voeg decimalen toe als numberType getal is en decimalen > 0
-  if (numberType === 'getal' && decimals > 0) {
+  if (numberType === 'NUMBER' && decimals > 0) {
     code += ' met ' + decimals + ' decimalen';
   }
   
