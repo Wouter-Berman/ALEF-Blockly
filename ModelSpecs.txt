@@ -1,0 +1,54 @@
+<rule document> ::= <object model> <rule model>
+
+<object model> ::= <object types> <relationship types> <type definitions> <parameters>
+<object types> ::= [{<object type>}]
+<object type> ::= <definite article> <object name> ["animate"] [{<characteristic>}] [{<attribute>}]
+
+<characteristic> ::=  (<definite article> <characteristic name> "characteristic") | (<definite article> <characteristic name> "characteristic (possessive)") | ("is" <characteristic name> "characteristic (adjective)")
+<attribute> ::= <definite article> <attribute name> <attribute type>
+<attribute type> ::= <data type> | <type definition>
+
+<relationship types> ::= [{<relationship type>}]
+<relationship type> ::= <relationship type name> <role name> <object name> <role multiplicity> <relationship string> <role name> <object name> <role multiplicity>
+
+<type definitions> ::= [{<type definition>}]
+<type definition> ::= <type definition name> <data type>
+
+<data type> ::= <numeric data type> | <percentage data type> | <text data type> | <boolean data type> | <date time data type>
+<numeric data type> ::= "numeric" <number specification> [<unit>)]
+<percentage data type> ::= "percentage <number specification> [<unit>)]
+<text data type> ::= "text"
+<boolean data type> ::= "boolean"
+<date time data type> ::= "date in days" | "date and time in milliseconds"
+<number specification> ::= ["negative" | "non-negative" | "positive"] ("integer" | ("number" [<decimals>])
+
+<parameters> ::=  [{<parameter>}]
+<parameter> ::= <definite_article> <parameter_name> (<data_type> | <type definition>)
+
+<rule model> ::= [{<rule group>}]
+<rule group> ::= <rule group name> [{<rule set>}]
+<rule set> ::= <rule set name> [{<business rule>}]
+
+<business rule> ::= <rule metadata> <regelspraak rule>
+<rule metadata> ::= <rule name> <rule id (guid)> <rule validity>
+<rule validity> ::= "allways" | <rule valid from> [<rule valid untill>]
+<regelspraak rule> ::= <action> [<condition>]
+<action> ::= <assignment action> | <compliance action>
+<assignment action> ::= <target> "becomes" <source>
+<compliance action> ::= <target> "must be" <comparison operator> <source>
+
+<fact reference> ::= <object> | <role> | <characteristic> [{"." <role>}] ["." (<attribute> | <characteristic>) ]
+<target> ::= <fact reference>
+<source> ::= <literal> | <fact reference> | <expression>
+<expression> ::= <function> "(" <literal> | <fact reference> | <expression> ";" {<literal> | <fact reference> | <expression>} ")"
+
+<operator> ::=  <assignment operator> | <comparison operator>
+<assignment operator> ::= ":="
+<comparison operator> ::= ">" | "<" | "<=" | ">=" | "==" | "<>"
+
+<condition> ::= <simple condition> | <complex condition>
+<simple condition> ::= <fact reference> <comparison operator> <literal> | <fact reference> | <expression>
+<complex comparison> ::= <comparison multiplicity> <condition> {<condition>}
+<comparison multiplicity ::= <unnumbered comparison multiplicity> | <numbered comparison multiplicity>
+<unnumbered comparison multiplicity> ::= "all" | "none" | "any"
+<numbered comparison multiplicity> ::= "at least" | "exactly" | "at most" <positive integer>

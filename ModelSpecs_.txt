@@ -1,0 +1,63 @@
+
+<rule document> ::= <object model> <rule model>
+
+<object model> ::= <object types> <relationship types> <type definitions> <parameters>
+<object types> ::= [{<object type>}]
+<object type> ::= <definite article> <object name> ["animate"] [{<characteristic>}] [{<attribute>}]
+
+<characteristic> ::=  (<definite article> <characteristic name> "characteristic") | (<definite article> <characteristic name> "characteristic (possessive)") | ("is" <characteristic name> "characteristic (adjective)")
+<attribute> ::= <definite article> <attribute name> <attribute type>
+<attribute type> ::= <data type> | <type definition>
+
+<type definitions> ::= [{<type definition>}]
+<type definition> ::= <type definition name> <data type>
+
+<relationship types> ::= [{<relationship type>}]
+<relationship type> ::= <relationship type name> <role> <relationship string> <role>
+<role> ::= <role name> <object name> <role multiplicity>
+
+<data type> ::= <numeric data type> | <percentage data type> | <text data type> | <boolean data type> | <date time data type>
+<numeric data type> ::= "numeric" <number specification> [<unit>)]
+<percentage data type> ::= "percentage <number specification> [<unit>)]
+<text data type> ::= "text"
+<boolean data type> ::= "boolean"
+<date time data type> ::= "date in days" | "date and time in milliseconds"
+(* ["negative" | "non-negative" | "positive"] in the specification below does not exist in gegevensspraak *)
+<number specification> ::= ["negative" | "non-negative" | "positive"] ("integer" | ("number" [<decimals>])
+
+<parameters> ::=  [{<parameter>}]
+<parameter> ::= <definite_article> <parameter_name> (<data_type> | <type definition>)
+
+<rule model> ::= [{<rule set>}]
+<rule set> ::= <rule set name> [{<rule group> | <rule set>}]
+<rule group> ::= <rule group name> [{<business rule>}]
+
+<business rule> ::= <rule metadata> <regelspraak rule> 
+<rule metadata> ::= <rule name> <rule id (guid))> <validity>
+<validity> ::= "allways" | (<valid from> [<valid untill>]))
+<regelspraak rule> ::= <rule action> [<compliance definition>] [<condition>]
+<rule action> ::= <assignment> [{<sub assignment>}]
+<assignment> ::= <target> <source>
+<sub assignment> ::= <sub target> <source>
+<sub target> ::= <fact reference>
+
+<fact reference> ::= (<subject> | <alias>) [{"." <role>}] "." (<attribute> | <characteristic>)
+<subject> ::= <alias> ":" (<object> | <role> | <characteristic>)
+
+<target> ::= <fact reference>
+<source> ::= <literal> | <fact reference> | <expression>
+<expression> ::= <function> "(" <function parameter> [{";" <function parameter>}] ")"
+<function parameter> ::= <literal> | <fact reference> | <expression>
+
+<operator> ::=  <assignment operator> | <comparison operator>
+<assignment operator> ::= ":="
+<comparison operator> ::= ">" | "<" | "<=" | ">=" | "==" | "<>"
+
+<condition> ::= <simple condition> | <complex condition>
+<simple condition> ::= <expression> <comparison operator> <expression> | <boolean function>
+<complex comparison> ::= <comparison multiplicity> <condition> {<condition>}
+<comparison multiplicity ::= <unnumbered comparison multiplicity> | <numbered comparison multiplicity>
+<unnumbered comparison multiplicity> ::= "all" | "none" | "any"
+<numbered comparison multiplicity> ::= "at least" | "exactly" | "at most" <positive integer>
+
+<parameter set> ::= <parameter set name> <validity> [{<parameter name> <parameter value>}]
