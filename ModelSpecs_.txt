@@ -32,7 +32,7 @@
 <rule set> ::= <rule set name> [{<rule group> | <rule set>}]
 <rule group> ::= <rule group name> [{<business rule>}]
 
-<business rule> ::= <rule metadata> <regelspraak rule> 
+<business rule> ::= <rule metadata> <regelspraak rule>
 <rule metadata> ::= <rule name> <rule id (guid))> <validity>
 <validity> ::= "allways" | (<valid from> [<valid untill>]))
 <regelspraak rule> ::= <rule action> [<compliance definition>] [<condition>]

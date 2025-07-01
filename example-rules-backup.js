@@ -3,7 +3,7 @@
  * This file contains predefined rules that can be loaded into the editor
  */
 
-// Example rule definitions in XML format (compatible with all Blockly versions)
+// Example rule definitions in XML format
 const exampleRules = {
   // Rule: afstand tot bestemming 01 (using assignment action)
   distance_init_example: `
@@ -298,80 +298,5 @@ const exampleRules = {
   `,
 };
 
-// Functie om een specifiek voorbeeld te laden
-function loadExampleRule(ruleName) {
-  if (exampleRules[ruleName]) {
-    const xml = exampleRules[ruleName];
-
-    try {
-      // Get the rules workspace
-      const workspace = window.workspaceRules;
-      if (!workspace) {
-        console.error('Rules workspace not available');
-        return;
-      }
-
-      // Clear workspace
-      workspace.clear();
-
-      // Try multiple loading methods for compatibility
-      let loaded = false;
-
-      // Method 1: Try modern Blockly.utils.xml (newest versions)
-      if (Blockly.utils && Blockly.utils.xml && Blockly.utils.xml.textToDom) {
-        try {
-          const xmlDom = Blockly.utils.xml.textToDom(xml);
-          Blockly.Xml.domToWorkspace(xmlDom, workspace);
-          loaded = true;
-        } catch (e) {
-          console.log('Method 1 failed, trying method 2:', e.message);
-        }
-      }
-
-      // Method 2: Try older Blockly.Xml.textToDom
-      if (!loaded && Blockly.Xml && Blockly.Xml.textToDom) {
-        try {
-          const xmlDom = Blockly.Xml.textToDom(xml);
-          Blockly.Xml.domToWorkspace(xmlDom, workspace);
-          loaded = true;
-        } catch (e) {
-          console.log('Method 2 failed, trying method 3:', e.message);
-        }
-      }
-
-      // Method 3: Try DOMParser as fallback
-      if (!loaded) {
-        try {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(xml, 'text/xml');
-          if (xmlDoc.documentElement && !xmlDoc.querySelector('parsererror')) {
-            Blockly.Xml.domToWorkspace(xmlDoc.documentElement, workspace);
-            loaded = true;
-          }
-        } catch (e) {
-          console.log('Method 3 failed:', e.message);
-        }
-      }
-
-      if (!loaded) {
-        console.error('All loading methods failed');
-        alert('Could not load example rule. Please check console for details.');
-        return;
-      }
-
-      // Generate rule text
-      const code = Blockly.JavaScript.workspaceToCode(workspace);
-      document.getElementById('outputRules').textContent = code;
-
-      console.log('Successfully loaded example rule:', ruleName);
-    } catch (err) {
-      console.error('Error loading example rule:', err);
-      alert('Error loading example rule: ' + err.message);
-    }
-  } else {
-    console.error('Example rule not found:', ruleName);
-  }
-}
-
-// Export the example loading function for use by main.js
-window.loadExampleRule = loadExampleRule;
+// Export the examples
+window.exampleRulesBackup = exampleRules;
