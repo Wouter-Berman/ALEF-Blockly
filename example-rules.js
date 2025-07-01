@@ -3,7 +3,7 @@
  * This file contains predefined rules that can be loaded into the editor
  */
 
-// Example rule definitions in XML format
+// Example rule definitions in XML format (compatible with all Blockly versions)
 const exampleRules = {
   // Rule: afstand tot bestemming 01 (using assignment action)
   "distance_init_example": `
@@ -304,58 +304,74 @@ function loadExampleRule(ruleName) {
     const xml = exampleRules[ruleName];
     
     try {
-      // Try modern serialization approach first
-      if (Blockly.serialization && Blockly.serialization.workspaces) {
-        const dom = new DOMParser().parseFromString(xml, 'text/xml');
-        Blockly.getMainWorkspace().clear();
-        Blockly.serialization.workspaces.load(dom.documentElement, Blockly.getMainWorkspace());
+      // Get the rules workspace
+      const workspace = window.workspaceRules;
+      if (!workspace) {
+        console.error('Rules workspace not available');
+        return;
       }
-      // Fall back to older XML approach
-      else if (Blockly.Xml) {
-        const xmlDom = Blockly.Xml.textToDom(xml);
-        Blockly.getMainWorkspace().clear();
-        Blockly.Xml.domToWorkspace(xmlDom, Blockly.getMainWorkspace());
+      
+      // Clear workspace
+      workspace.clear();
+      
+      // Try multiple loading methods for compatibility
+      let loaded = false;
+      
+      // Method 1: Try modern Blockly.utils.xml (newest versions)
+      if (Blockly.utils && Blockly.utils.xml && Blockly.utils.xml.textToDom) {
+        try {
+          const xmlDom = Blockly.utils.xml.textToDom(xml);
+          Blockly.Xml.domToWorkspace(xmlDom, workspace);
+          loaded = true;
+        } catch (e) {
+          console.log('Method 1 failed, trying method 2:', e.message);
+        }
       }
-      else {
-        console.error('Unable to load example rule - Blockly serialization methods not available');
-        alert('This version of Blockly does not support loading example rules');
+      
+      // Method 2: Try older Blockly.Xml.textToDom
+      if (!loaded && Blockly.Xml && Blockly.Xml.textToDom) {
+        try {
+          const xmlDom = Blockly.Xml.textToDom(xml);
+          Blockly.Xml.domToWorkspace(xmlDom, workspace);
+          loaded = true;
+        } catch (e) {
+          console.log('Method 2 failed, trying method 3:', e.message);
+        }
+      }
+      
+      // Method 3: Try DOMParser as fallback
+      if (!loaded) {
+        try {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xml, 'text/xml');
+          if (xmlDoc.documentElement && !xmlDoc.querySelector('parsererror')) {
+            Blockly.Xml.domToWorkspace(xmlDoc.documentElement, workspace);
+            loaded = true;
+          }
+        } catch (e) {
+          console.log('Method 3 failed:', e.message);
+        }
+      }
+      
+      if (!loaded) {
+        console.error('All loading methods failed');
+        alert('Could not load example rule. Please check console for details.');
         return;
       }
       
       // Generate rule text
-      const code = Blockly.JavaScript.workspaceToCode(Blockly.getMainWorkspace());
-      document.getElementById('output').textContent = code;
+      const code = Blockly.JavaScript.workspaceToCode(workspace);
+      document.getElementById('outputRules').textContent = code;
+      
+      console.log('Successfully loaded example rule:', ruleName);
     } catch (err) {
       console.error('Error loading example rule:', err);
       alert('Error loading example rule: ' + err.message);
     }
+  } else {
+    console.error('Example rule not found:', ruleName);
   }
 }
 
-// Registreer callbacks voor de toolbox buttons
-function registerButtonCallbacks(workspace) {
-  const callbacks = {
-    loadDistanceInitExample: function() {
-      loadExampleRule('distance_init_example');
-    },
-    loadTaxCalculationExample: function() {
-      loadExampleRule('tax_calculation_example');
-    },
-    loadComplianceRuleExample: function() {
-      loadExampleRule('compliance_rule_example');
-    }
-  };
-  
-  // Registreer alle callbacks
-  for (const key in callbacks) {
-    workspace.registerButtonCallback(key, callbacks[key]);
-  }
-}
-
-// Initialiseer de voorbeeld buttons wanneer de pagina is geladen
-window.addEventListener('load', function() {
-  const workspace = Blockly.getMainWorkspace();
-  if (workspace) {
-    registerButtonCallbacks(workspace);
-  }
-});
+// Export the example loading function for use by main.js
+window.loadExampleRule = loadExampleRule;

@@ -1,1 +1,33 @@
-Eerste bestand
+# ALEF-Blockly Regel Syntax & Objectmodel Editor
+
+Een visuele editor voor het maken van bedrijfsregels en objectmodellen met behulp van Blockly.
+
+## Hoe te gebruiken
+
+### Opstarten
+1. Open `index.html` in een webbrowser
+2. Of gebruik de commando: `open index.html`
+
+### Functionaliteit
+De applicatie heeft twee hoofdtabbladen:
+
+**Regels**
+- Maak bedrijfsregels door blokken uit de toolbox te slepen
+- Categorieën: Regels, Acties, Objecten, Expressies, Voorwaarden, Waarden
+- Voorbeeldregels beschikbaar via de Voorbeelden categorie
+
+**Objectmodel**
+- Definieer objectmodellen en hun structuur
+- Categorieën: Objectmodel, Objecttypes, Relaties, Types, Parameters
+
+### Knoppen
+- **Opslaan**: Sla je werk op in lokale opslag
+- **Laden**: Laad eerder opgeslagen werk
+- **Genereer Code**: Genereer code uit je visuele blokken
+
+### Voorbeelden
+Gebruik de voorbeeldknoppen om snel aan de slag te gaan:
+- Afstand initialisatie
+- Belastingberekening  
+- Compliance regel
+- Vlucht objectmodel

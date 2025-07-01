@@ -69,6 +69,12 @@ function generateCode() {
   }
 }
 
+// Debug functie om JSON serialisatie te testen
+function debugSerializedWorkspace() {
+  const state = Blockly.serialization.workspaces.save(currentWorkspace);
+  console.log('Current workspace state:', JSON.stringify(state, null, 2));
+}
+
 // Luisteraars toevoegen voor veranderingen in de werkruimtes
 workspaceRules.addChangeListener(function(event) {
   if (event.type === Blockly.Events.BLOCK_CHANGE || 
