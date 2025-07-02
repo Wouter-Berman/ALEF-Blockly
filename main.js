@@ -49,6 +49,10 @@ window.workspaceObjectModel = workspaceObjectModel;
 let currentWorkspace = workspaceRules;
 let currentWorkspaceType = 'rules';
 
+// Navigation system voor rule references
+let navigationStack = [];
+let currentRuleName = null;
+
 // Functie om code te genereren uit de actieve werkruimte
 function generateCode() {
   try {
@@ -221,6 +225,276 @@ function loadWorkspace() {
   input.click();
 }
 
+// Navigation functions
+function navigateToRule(ruleId) {
+  console.log('=== NAVIGATE TO RULE ===');
+  console.log('Target rule ID:', ruleId);
+
+  // Map rule IDs to example rule names
+  const ruleMap = {
+    'zvw-verzekerde-01': 'zvw_verzekerde_status_rule',
+    'penitentiaire-beginselenwet-01': 'penitentiaire_beginselenwet_rule',
+    'standaardpremie-01': 'standaardpremie_calculation_rule',
+    'zorgtoeslag-hoogte-01': 'zorgtoeslag_official_complete_rule_example',
+    'minimumleeftijd-01': 'distance_init_example', // placeholder for now
+    'leeftijd-controle-01': 'distance_init_example', // placeholder
+    'inkomen-alleenstaande-01': 'tax_calculation_example', // placeholder
+    'inkomen-partners-01': 'compliance_rule_example', // placeholder
+  };
+
+  console.log('Rule map:', ruleMap);
+
+  const exampleRuleName = ruleMap[ruleId];
+  if (exampleRuleName && typeof loadExampleRule === 'function') {
+    // Save current state to navigation stack
+    if (currentRuleName) {
+      navigationStack.push({
+        ruleName: currentRuleName,
+        workspace: Blockly.serialization.workspaces.save(workspaceRules),
+      });
+    }
+
+    // Load the new rule
+    loadExampleRule(exampleRuleName);
+    currentRuleName = ruleId;
+
+    // Update UI
+    updateNavigationUI();
+  } else {
+    alert('Regel "' + ruleId + '" niet gevonden.');
+  }
+}
+
+function navigateBack() {
+  if (navigationStack.length > 0) {
+    const previousState = navigationStack.pop();
+
+    // Restore previous workspace
+    workspaceRules.clear();
+    Blockly.serialization.workspaces.load(
+      previousState.workspace,
+      workspaceRules
+    );
+    currentRuleName = previousState.ruleName;
+
+    // Update UI
+    updateNavigationUI();
+    generateCode();
+  }
+}
+
+function updateNavigationUI() {
+  // Update navigation bar (we'll add this to HTML later)
+  const navElement = document.getElementById('navigationBar');
+  if (navElement) {
+    let breadcrumbs = '';
+    if (currentRuleName) {
+      const ruleNames = {
+        'zvw-verzekerde-01': 'ZVW Verzekerde Status',
+        'standaardpremie-01': 'Standaardpremie',
+        'zorgtoeslag-hoogte-01': 'Zorgtoeslag Hoogte',
+        'minimumleeftijd-01': 'Minimumleeftijd',
+      };
+      breadcrumbs =
+        'Huidige regel: ' + (ruleNames[currentRuleName] || currentRuleName);
+    }
+
+    if (navigationStack.length > 0) {
+      breadcrumbs +=
+        ' <button onclick="navigateBack()" style="margin-left: 10px;">← Terug</button>';
+    }
+
+    navElement.innerHTML = breadcrumbs;
+  }
+}
+
+// Setup click handlers for rule_reference blocks
+function setupRuleReferenceClickHandlers() {
+  console.log('Setting up rule reference click handlers...');
+
+  // Add change listener for new blocks
+  workspaceRules.addChangeListener(function (event) {
+    if (event.type === Blockly.Events.BLOCK_CREATE) {
+      console.log('Block created:', event.blockId);
+      // Use setTimeout to ensure SVG is fully rendered
+      setTimeout(function () {
+        const block = workspaceRules.getBlockById(event.blockId);
+        if (block) {
+          addClickHandlerToBlock(block);
+        }
+      }, 100);
+    }
+
+    // Handle field changes for rule_output_reference blocks
+    if (
+      event.type === Blockly.Events.BLOCK_CHANGE &&
+      event.element === 'field'
+    ) {
+      const block = workspaceRules.getBlockById(event.blockId);
+      if (
+        block &&
+        block.type === 'rule_output_reference' &&
+        event.name === 'RULE_ID'
+      ) {
+        console.log(
+          'Rule field changed in block:',
+          event.blockId,
+          'New value:',
+          event.newValue
+        );
+
+        // Update the output dropdown
+        const outputField = block.getField('OUTPUT_NAME');
+        if (outputField && window.getOutputsForRule) {
+          const newOptions = window.getOutputsForRule(event.newValue);
+          console.log('Updating output options to:', newOptions);
+
+          // Try to update the dropdown
+          if (outputField.menuGenerator_) {
+            outputField.menuGenerator_ = newOptions;
+          }
+
+          // Set to first valid option
+          if (newOptions.length > 0) {
+            outputField.setValue(newOptions[0][1]);
+          }
+        }
+      }
+    }
+  });
+
+  // Also add handlers to existing blocks
+  setTimeout(function () {
+    const allBlocks = workspaceRules.getAllBlocks();
+    allBlocks.forEach(function (block) {
+      addClickHandlerToBlock(block);
+    });
+  }, 500);
+}
+
+function addClickHandlerToBlock(block) {
+  if (!block || !block.getSvgRoot()) {
+    return;
+  }
+
+  console.log('Adding click handler to block type:', block.type);
+
+  // Add dynamic dropdown update for rule_output_reference
+  if (block.type === 'rule_output_reference') {
+    const ruleField = block.getField('RULE_ID');
+    const outputField = block.getField('OUTPUT_NAME');
+
+    if (ruleField && outputField) {
+      // Add change listener to update output dropdown when rule changes
+      ruleField.setValidator(function (newValue) {
+        console.log('Rule changed to:', newValue);
+        const newOptions = window.getOutputsForRule
+          ? window.getOutputsForRule(newValue)
+          : [['loading...', 'loading']];
+        console.log('New output options:', newOptions);
+
+        // Force update the dropdown options
+        if (outputField.menuGenerator_) {
+          outputField.menuGenerator_ = newOptions;
+        }
+
+        // For newer Blockly versions, try this approach
+        if (outputField.getOptions) {
+          outputField.getOptions = function () {
+            return newOptions;
+          };
+        }
+
+        // Set to first option and force re-render
+        if (newOptions.length > 0) {
+          outputField.setValue(newOptions[0][1]);
+
+          // Force the field to refresh its display
+          if (outputField.forceRerender) {
+            outputField.forceRerender();
+          }
+        }
+
+        return newValue;
+      });
+
+      // Initialize with current rule
+      const currentRule = ruleField.getValue();
+      if (currentRule && window.getOutputsForRule) {
+        const initialOptions = window.getOutputsForRule(currentRule);
+        outputField.menuGenerator_ = initialOptions;
+      }
+    }
+  }
+
+  // Handle rule_reference blocks
+  if (block.type === 'rule_reference') {
+    const svgRoot = block.getSvgRoot();
+
+    // Remove existing listeners to avoid duplicates
+    svgRoot.removeEventListener('click', handleRuleReferenceClick);
+
+    function handleRuleReferenceClick(e) {
+      console.log('Rule reference clicked!');
+      const ruleId = block.getFieldValue('RULE_ID');
+      console.log('Rule ID:', ruleId);
+      if (ruleId) {
+        e.stopPropagation();
+        e.preventDefault();
+        navigateToRule(ruleId);
+      }
+    }
+
+    svgRoot.addEventListener('click', handleRuleReferenceClick);
+    svgRoot.style.cursor = 'pointer';
+    svgRoot.title = 'Klik om naar deze regel te navigeren';
+  }
+
+  // Handle rule_output_reference blocks
+  if (block.type === 'rule_output_reference') {
+    const svgRoot = block.getSvgRoot();
+
+    function handleRuleOutputClick(e) {
+      console.log('Rule output reference clicked!');
+      const ruleId = block.getFieldValue('RULE_ID');
+      const outputName = block.getFieldValue('OUTPUT_NAME');
+      console.log('Rule ID:', ruleId, 'Output:', outputName);
+      if (ruleId) {
+        e.stopPropagation();
+        e.preventDefault();
+        navigateToRule(ruleId);
+      }
+    }
+
+    svgRoot.addEventListener('click', handleRuleOutputClick);
+    svgRoot.style.cursor = 'pointer';
+    svgRoot.title =
+      'Klik om naar de regel te navigeren die deze output produceert';
+  }
+
+  // Handle law_parameter_reference blocks
+  if (block.type === 'law_parameter_reference') {
+    const svgRoot = block.getSvgRoot();
+
+    function handleLawParameterClick(e) {
+      console.log('Law parameter reference clicked!');
+      const lawId = block.getFieldValue('LAW_ID');
+      e.stopPropagation();
+      e.preventDefault();
+      alert('Navigatie naar wet "' + lawId + '" nog niet geïmplementeerd.');
+    }
+
+    svgRoot.addEventListener('click', handleLawParameterClick);
+    svgRoot.style.cursor = 'pointer';
+    svgRoot.title = 'Klik om naar de wet/parameter definitie te navigeren';
+  }
+}
+
+// Export navigation functions to global scope
+window.navigateToRule = navigateToRule;
+window.navigateBack = navigateBack;
+window.addClickHandlerToBlock = addClickHandlerToBlock;
+
 // Event listeners voor knoppen
 document
   .getElementById('generateButton')
@@ -281,6 +555,30 @@ function registerButtonCallbacks() {
         loadExampleRule('zorgtoeslag_official_complete_rule_example');
       }
     },
+    loadZVWVerzekerdStatusRule: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
+        loadExampleRule('zvw_verzekerde_status_rule');
+      }
+    },
+    loadStandaardpremieCalculationRule: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
+        loadExampleRule('standaardpremie_calculation_rule');
+      }
+    },
+    loadPenitentiaireBeginselenwetRule: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
+        loadExampleRule('penitentiaire_beginselenwet_rule');
+      }
+    },
   };
 
   const objectModelCallbacks = {
@@ -321,6 +619,9 @@ function registerButtonCallbacks() {
 window.addEventListener('load', function () {
   // Registreer button callbacks
   registerButtonCallbacks();
+
+  // Setup rule reference click handlers
+  setupRuleReferenceClickHandlers();
 
   // Initialiseer actieve werkruimte
   showRulesWorkspace();

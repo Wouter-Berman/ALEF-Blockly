@@ -215,3 +215,29 @@ pre {
     justify-content: space-between;
   }
 }
+
+/* Navigation bar styling */
+.navigation-bar {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 14px;
+  color: #495057;
+  min-height: 20px;
+}
+
+.navigation-bar button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.navigation-bar button:hover {
+  background-color: #0056b3;
+}

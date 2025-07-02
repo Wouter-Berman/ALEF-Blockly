@@ -271,6 +271,9 @@ Blockly.defineBlocksWithJsonArray([
           ['verzekerde zorgtoeslag', 'VERZEKERDE_ZORGTOESLAG'],
           ['voorlopig toegekend', 'VOORLOPIG_TOEGEKEND'],
           ['definitief vastgesteld', 'DEFINITIEF_VASTGESTELD'],
+          ['is gedetineerde', 'IS_GEDETINEERDE'],
+          ['heeft zorgverzekering plicht', 'HEEFT_ZORGVERZEKERING_PLICHT'],
+          ['vrijheidsbenemende maatregel', 'VRIJHEIDSBENEMENDE_MAATREGEL'],
         ],
       },
     ],
@@ -699,4 +702,145 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: 'Conditional expression: if condition then value else other value',
     helpUrl: '',
   },
+
+  // Rule reference block for navigation
+  {
+    type: 'rule_reference',
+    message0: '📋 regel: %1',
+    args0: [
+      {
+        type: 'field_dropdown',
+        name: 'RULE_ID',
+        options: [
+          ['ZVW verzekerde status bepaling', 'zvw-verzekerde-01'],
+          ['Standaardpremie berekening', 'standaardpremie-01'],
+          ['Zorgtoeslag hoogte berekening', 'zorgtoeslag-hoogte-01'],
+          ['Minimumleeftijd controle', 'minimumleeftijd-01'],
+        ],
+      },
+    ],
+    output: ['fact_reference', 'literal', 'expression'],
+    colour: 300,
+    tooltip: 'Verwijzing naar een andere regel - klik om te navigeren',
+    helpUrl: '',
+    // Custom click handler will be added in main.js
+  },
+
+  // Rule output reference block with filtered dropdown
+  {
+    type: 'rule_output_reference',
+    message0: '📤 %1: %2',
+    args0: [
+      {
+        type: 'field_dropdown',
+        name: 'RULE_ID',
+        options: [
+          ['ZVW', 'zvw-verzekerde-01'],
+          ['Penitentiaire Beginselenwet', 'penitentiaire-beginselenwet-01'],
+          ['Standaardpremie', 'standaardpremie-01'],
+          ['Leeftijd', 'leeftijd-controle-01'],
+          ['Inkomen Single', 'inkomen-alleenstaande-01'],
+          ['Inkomen Partners', 'inkomen-partners-01'],
+        ],
+      },
+      {
+        type: 'field_dropdown',
+        name: 'OUTPUT_NAME',
+        options: function () {
+          // Get the current rule selection to show appropriate outputs
+          const ruleId = this.getSourceBlock()
+            ? this.getSourceBlock().getFieldValue('RULE_ID')
+            : 'zvw-verzekerde-01';
+          return window.getOutputsForRule
+            ? window.getOutputsForRule(ruleId)
+            : [
+                ['is_verzekerde', 'is_verzekerde_volgens_zvw'],
+                ['polisnummer_geldig', 'polisnummer_geldig'],
+                ['woonland_nl', 'woonland_nederland'],
+              ];
+        },
+      },
+    ],
+    output: ['fact_reference', 'literal', 'expression'],
+    colour: 320,
+    tooltip:
+      'Verwijzing naar een specifieke output van een andere regel - klik om te navigeren',
+    helpUrl: '',
+  },
+
+  // Parameter reference to other laws/rules
+  {
+    type: 'law_parameter_reference',
+    message0: '⚖️ parameter uit %1: %2',
+    args0: [
+      {
+        type: 'field_dropdown',
+        name: 'LAW_ID',
+        options: [
+          ['Zorgverzekeringswet (ZVW)', 'zvw'],
+          ['Zorgtoeslagwet', 'zorgtoeslagwet'],
+          ['Algemene Wet Bijzondere Ziektekosten', 'awbz'],
+          ['Wet op de zorgtoeslag', 'wzk'],
+        ],
+      },
+      {
+        type: 'field_dropdown',
+        name: 'PARAMETER_NAME',
+        options: [
+          ['MINIMUM_AGE', 'MINIMUM_AGE'],
+          ['STANDAARDPREMIE', 'STANDAARDPREMIE'],
+          ['INCOME_THRESHOLD_SINGLE', 'INCOME_THRESHOLD_SINGLE'],
+          ['COMBINED_INCOME_THRESHOLD', 'COMBINED_INCOME_THRESHOLD'],
+          ['REDUCTION_PERCENTAGE', 'REDUCTION_PERCENTAGE'],
+        ],
+      },
+    ],
+    output: 'parameter_reference',
+    colour: 40,
+    tooltip:
+      'Parameter uit een specifieke wet - klik om naar de wet te navigeren',
+    helpUrl: '',
+  },
 ]);
+
+// Helper function to get outputs for a specific rule
+function getOutputsForRule(ruleId) {
+  const ruleOutputs = {
+    'zvw-verzekerde-01': [
+      ['is_verzekerde', 'is_verzekerde_volgens_zvw'],
+      ['polisnummer_geldig', 'polisnummer_geldig'],
+      ['woonland_nl', 'woonland_nederland'],
+    ],
+    'penitentiaire-beginselenwet-01': [
+      ['is_gedetineerde', 'is_gedetineerde'],
+      ['heeft_zorgverzekering_plicht', 'heeft_zorgverzekering_plicht'],
+      ['vrijheidsbenemende_maatregel', 'vrijheidsbenemende_maatregel'],
+    ],
+    'standaardpremie-01': [
+      ['standaardpremie_bedrag', 'standaardpremie_bedrag'],
+      ['premie_per_maand', 'premie_per_maand'],
+    ],
+    'leeftijd-controle-01': [
+      ['voldoet_minimumleeftijd', 'voldoet_aan_minimumleeftijd'],
+      ['is_meerderjarig', 'is_meerderjarig'],
+    ],
+    'inkomen-alleenstaande-01': [
+      ['inkomen_boven_drempel', 'inkomen_boven_drempel'],
+      ['vermogen_onder_grens', 'vermogen_onder_grens'],
+      ['recht_op_toeslag', 'recht_op_toeslag'],
+    ],
+    'inkomen-partners-01': [
+      [
+        'gezamenlijk_inkomen_boven_drempel',
+        'gezamenlijk_inkomen_boven_drempel',
+      ],
+      ['gezamenlijk_vermogen_onder_grens', 'gezamenlijk_vermogen_onder_grens'],
+      ['partners_recht_op_toeslag', 'partners_recht_op_toeslag'],
+    ],
+  };
+
+  return ruleOutputs[ruleId] || [['geen outputs', 'no_outputs']];
+}
+
+// Make function globally available
+window.getOutputsForRule = getOutputsForRule;

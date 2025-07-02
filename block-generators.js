@@ -496,6 +496,51 @@ javascript.javascriptGenerator.forBlock['if_then_else'] = function (block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
+// Code generator voor rule reference blok
+javascript.javascriptGenerator.forBlock['rule_reference'] = function (block) {
+  var ruleId = block.getFieldValue('RULE_ID');
+
+  // Generic output - just reference the rule ID
+  var code = 'het resultaat van regel "' + ruleId + '"';
+
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+// Code generator voor rule output reference blok
+javascript.javascriptGenerator.forBlock['rule_output_reference'] = function (
+  block
+) {
+  var ruleId = block.getFieldValue('RULE_ID');
+  var outputName = block.getFieldValue('OUTPUT_NAME');
+
+  // Map rule IDs to readable law names
+  var lawNameMap = {
+    'zvw-verzekerde-01': 'ZVW',
+    'penitentiaire-beginselenwet-01': 'Penitentiaire Beginselenwet',
+    'standaardpremie-01': 'Standaardpremie',
+    'leeftijd-controle-01': 'Leeftijd',
+    'inkomen-alleenstaande-01': 'Inkomen Single',
+    'inkomen-partners-01': 'Inkomen Partners',
+  };
+
+  var lawName = lawNameMap[ruleId] || ruleId;
+  var code = lawName + ': ' + outputName;
+
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+// Code generator voor law parameter reference blok
+javascript.javascriptGenerator.forBlock['law_parameter_reference'] = function (
+  block
+) {
+  var lawId = block.getFieldValue('LAW_ID');
+  var parameterName = block.getFieldValue('PARAMETER_NAME');
+
+  var code = 'parameter "' + parameterName + '" uit ' + lawId;
+
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
 // Functie om te controleren of alle code generators geregistreerd zijn
 function verifyCodeGenerators() {
   // Lijst van alle bloktypes die generators moeten hebben
@@ -519,6 +564,9 @@ function verifyCodeGenerators() {
     'minimum_maximum',
     'rounding',
     'if_then_else',
+    'rule_reference',
+    'rule_output_reference',
+    'law_parameter_reference',
   ];
 
   // Controleer of generators bestaan voor alle bloktypes

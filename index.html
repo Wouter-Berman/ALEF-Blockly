@@ -23,6 +23,7 @@
           <button id="loadButton">Laden</button>
           <button id="generateButton">Genereer Code</button>
         </div>
+        <div id="navigationBar" class="navigation-bar"></div>
       </header>
 
       <main class="vertical-layout">
@@ -50,6 +51,8 @@
     <xml id="toolboxRules" style="display: none">
       <category name="Regels" colour="210">
         <block type="business_rule"></block>
+        <block type="rule_reference"></block>
+        <block type="rule_output_reference"></block>
       </category>
 
       <category name="Acties" colour="180">
@@ -84,6 +87,7 @@
         <block type="literal"></block>
         <block type="boolean_literal"></block>
         <block type="parameter_reference"></block>
+        <block type="law_parameter_reference"></block>
       </category>
 
       <category name="Voorbeelden" colour="65">
@@ -102,6 +106,18 @@
         <button
           text="Laad voorbeeld: Officiële Zorgtoeslag VOLLEDIG (eligibiliteit + hoogte) 2025"
           callbackKey="loadZorgtoeslagOfficialCompleteRuleExample"
+        ></button>
+        <button
+          text="Laad voorbeeld: ZVW Verzekerde Status Bepaling"
+          callbackKey="loadZVWVerzekerdStatusRule"
+        ></button>
+        <button
+          text="Laad voorbeeld: Standaardpremie Berekening"
+          callbackKey="loadStandaardpremieCalculationRule"
+        ></button>
+        <button
+          text="Laad voorbeeld: Penitentiaire Beginselenwet"
+          callbackKey="loadPenitentiaireBeginselenwetRule"
         ></button>
       </category>
     </xml>

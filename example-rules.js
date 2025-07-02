@@ -318,8 +318,9 @@ const exampleRules = {
               </block>
             </value>
             <value name="SOURCE">
-              <block type="boolean_literal" id="boolTrueIsVerzekerde">
-                <field name="VALUE">TRUE</field>
+              <block type="rule_output_reference" id="outputZVWVerzekerde">
+                <field name="RULE_ID">zvw-verzekerde-01</field>
+                <field name="OUTPUT_NAME">is_verzekerde_volgens_zvw</field>
               </block>
             </value>
             <next>
@@ -368,13 +369,9 @@ const exampleRules = {
                                   </block>
                                 </value>
                                 <value name="RIGHT">
-                                  <block type="fact_reference" id="factStandardPremiumPartner">
-                                    <field name="OBJECT_TYPE">BURGER</field>
-                                    <value name="ATTRIBUTE">
-                                      <block type="attribute" id="attrStandardPremiumPartner">
-                                        <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
-                                      </block>
-                                    </value>
+                                  <block type="law_parameter_reference" id="lawParamStandardPremiumPartner">
+                                    <field name="LAW_ID">zorgtoeslagwet</field>
+                                    <field name="PARAMETER_NAME">STANDAARDPREMIE</field>
                                   </block>
                                 </value>
                               </block>
@@ -383,7 +380,8 @@ const exampleRules = {
                               <block type="math_operation" id="mathPartnerReductionFormula">
                                 <field name="OPERATOR">MULTIPLY</field>
                                 <value name="LEFT">
-                                  <block type="parameter_reference" id="paramReductionPercPartner">
+                                  <block type="law_parameter_reference" id="lawParamReductionPercPartner">
+                                    <field name="LAW_ID">zorgtoeslagwet</field>
                                     <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
                                   </block>
                                 </value>
@@ -416,7 +414,8 @@ const exampleRules = {
                                       </block>
                                     </value>
                                     <value name="RIGHT">
-                                      <block type="parameter_reference" id="paramCombinedThreshold">
+                                      <block type="law_parameter_reference" id="lawParamCombinedThreshold">
+                                        <field name="LAW_ID">zorgtoeslagwet</field>
                                         <field name="PARAMETER_NAME">COMBINED_INCOME_THRESHOLD</field>
                                       </block>
                                     </value>
@@ -441,20 +440,17 @@ const exampleRules = {
                           <block type="math_operation" id="mathSingleFormula">
                             <field name="OPERATOR">MINUS</field>
                             <value name="LEFT">
-                              <block type="fact_reference" id="factStandardPremiumSingle">
-                                <field name="OBJECT_TYPE">BURGER</field>
-                                <value name="ATTRIBUTE">
-                                  <block type="attribute" id="attrStandardPremiumSingle">
-                                    <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
-                                  </block>
-                                </value>
+                              <block type="law_parameter_reference" id="lawParamStandardPremiumSingle">
+                                <field name="LAW_ID">zorgtoeslagwet</field>
+                                <field name="PARAMETER_NAME">STANDAARDPREMIE</field>
                               </block>
                             </value>
                             <value name="RIGHT">
                               <block type="math_operation" id="mathSingleReductionFormula">
                                 <field name="OPERATOR">MULTIPLY</field>
                                 <value name="LEFT">
-                                  <block type="parameter_reference" id="paramReductionPercSingle">
+                                  <block type="law_parameter_reference" id="lawParamReductionPercSingle">
+                                    <field name="LAW_ID">zorgtoeslagwet</field>
                                     <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
                                   </block>
                                 </value>
@@ -472,7 +468,8 @@ const exampleRules = {
                                       </block>
                                     </value>
                                     <value name="RIGHT">
-                                      <block type="parameter_reference" id="paramIncomeThresholdSingle">
+                                      <block type="law_parameter_reference" id="lawParamIncomeThresholdSingle">
+                                        <field name="LAW_ID">zorgtoeslagwet</field>
                                         <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
                                       </block>
                                     </value>
@@ -507,20 +504,17 @@ const exampleRules = {
                 </value>
                 <field name="OPERATOR">GREATER_THAN_EQUALS</field>
                 <value name="RIGHT">
-                  <block type="parameter_reference" id="paramMinimumAge">
+                  <block type="law_parameter_reference" id="lawParamMinimumAge">
+                    <field name="LAW_ID">zorgtoeslagwet</field>
                     <field name="PARAMETER_NAME">MINIMUM_AGE</field>
                   </block>
                 </value>
                 <next>
                   <block type="simple_condition" id="condIsVerzekerde">
                     <value name="LEFT">
-                      <block type="fact_reference" id="factIsVerzekerde">
-                        <field name="OBJECT_TYPE">BURGER</field>
-                        <value name="ATTRIBUTE">
-                          <block type="characteristic" id="charIsVerzekerde">
-                            <field name="CHARACTERISTIC_NAME">VERZEKERDE_VOLGENS_ZVW</field>
-                          </block>
-                        </value>
+                      <block type="rule_output_reference" id="outputZVWIsVerzekerde">
+                        <field name="RULE_ID">zvw-verzekerde-01</field>
+                        <field name="OUTPUT_NAME">is_verzekerde_volgens_zvw</field>
                       </block>
                     </value>
                     <field name="OPERATOR">EQUALS</field>
@@ -533,6 +527,217 @@ const exampleRules = {
                 </next>
               </block>
             </statement>
+          </block>
+        </statement>
+      </block>
+    </xml>
+  `,
+
+  // ZVW Verzekerde Status regel (aparte regel voor navigation)
+  zvw_verzekerde_status_rule: `
+    <xml xmlns="https://developers.google.com/blockly/xml">
+      <block type="business_rule" id="ruleZVWVerzekerde" x="20" y="20">
+        <field name="RULE_NAME">ZVW verzekerde status bepaling</field>
+        <field name="RULE_ID">zvw-verzekerde-01</field>
+        <field name="VALID_FROM">2025-01-01</field>
+        <field name="VALID_UNTIL"></field>
+        <statement name="ACTIONS">
+          <block type="assignment_action" id="actionZVWCheck">
+            <value name="TARGET">
+              <block type="fact_reference" id="targetZVWStatus">
+                <field name="OBJECT_TYPE">BURGER</field>
+                <value name="ATTRIBUTE">
+                  <block type="characteristic" id="charZVWStatus">
+                    <field name="CHARACTERISTIC_NAME">VERZEKERDE_VOLGENS_ZVW</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="SOURCE">
+              <block type="boolean_literal" id="boolTrueZVW">
+                <field name="VALUE">TRUE</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+        <statement name="CONDITIONS">
+          <block type="complex_condition" id="complexCondZVW">
+            <field name="MULTIPLICITY">ALL</field>
+            <statement name="CONDITIONS">
+              <block type="simple_condition" id="condPolisNummer">
+                <value name="LEFT">
+                  <block type="fact_reference" id="factPolisNummer">
+                    <field name="OBJECT_TYPE">BURGER</field>
+                    <value name="ATTRIBUTE">
+                      <block type="attribute" id="attrPolisNummer">
+                        <field name="ATTRIBUTE_NAME">POLISNUMMER_ZORGVERZEKERING</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <field name="OPERATOR">NOT_EQUALS</field>
+                <value name="RIGHT">
+                  <block type="literal" id="literalEmpty">
+                    <field name="VALUE"></field>
+                    <field name="UNIT">NONE</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="simple_condition" id="condWoonlandNL">
+                    <value name="LEFT">
+                      <block type="fact_reference" id="factWoonland">
+                        <field name="OBJECT_TYPE">BURGER</field>
+                        <value name="ATTRIBUTE">
+                          <block type="attribute" id="attrWoonland">
+                            <field name="ATTRIBUTE_NAME">WOONLAND</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <field name="OPERATOR">EQUALS</field>
+                    <value name="RIGHT">
+                      <block type="literal" id="literalNL">
+                        <field name="VALUE">NL</field>
+                        <field name="UNIT">NONE</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="simple_condition" id="condGeenGedetineerde">
+                        <value name="LEFT">
+                          <block type="rule_output_reference" id="outputPenitentiaireIsGedetineerde">
+                            <field name="RULE_ID">penitentiaire-beginselenwet-01</field>
+                            <field name="OUTPUT_NAME">is_gedetineerde</field>
+                          </block>
+                        </value>
+                        <field name="OPERATOR">EQUALS</field>
+                        <value name="RIGHT">
+                          <block type="boolean_literal" id="boolFalseGedetineerde">
+                            <field name="VALUE">FALSE</field>
+                          </block>
+                        </value>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </xml>
+  `,
+
+  // Standaardpremie berekening regel
+  standaardpremie_calculation_rule: `
+    <xml xmlns="https://developers.google.com/blockly/xml">
+      <block type="business_rule" id="ruleStandaardpremie" x="20" y="20">
+        <field name="RULE_NAME">Standaardpremie berekening</field>
+        <field name="RULE_ID">standaardpremie-01</field>
+        <field name="VALID_FROM">2025-01-01</field>
+        <field name="VALID_UNTIL"></field>
+        <statement name="ACTIONS">
+          <block type="assignment_action" id="actionStandaardpremie">
+            <value name="TARGET">
+              <block type="fact_reference" id="targetStandaardpremie">
+                <field name="OBJECT_TYPE">BURGER</field>
+                <value name="ATTRIBUTE">
+                  <block type="attribute" id="attrStandaardpremie">
+                    <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="SOURCE">
+              <block type="literal" id="literalStandaardpremie">
+                <field name="VALUE">1450</field>
+                <field name="UNIT">EUR</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+        <statement name="CONDITIONS">
+          <block type="simple_condition" id="condVerzekerdZVW">
+            <value name="LEFT">
+              <block type="rule_reference" id="refZVWVerzekerde">
+                <field name="RULE_ID">zvw-verzekerde-01</field>
+              </block>
+            </value>
+            <field name="OPERATOR">EQUALS</field>
+            <value name="RIGHT">
+              <block type="boolean_literal" id="boolTrueStandaard">
+                <field name="VALUE">TRUE</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+      </block>
+    </xml>
+  `,
+
+  // Penitentiaire Beginselenwet regel
+  penitentiaire_beginselenwet_rule: `
+    <xml xmlns="https://developers.google.com/blockly/xml">
+      <block type="business_rule" id="rulePenitentiaireBeginselenwet" x="20" y="20">
+        <field name="RULE_NAME">Penitentiaire Beginselenwet - zorgverzekering status</field>
+        <field name="RULE_ID">penitentiaire-beginselenwet-01</field>
+        <field name="VALID_FROM">2025-01-01</field>
+        <field name="VALID_UNTIL"></field>
+        <statement name="ACTIONS">
+          <block type="assignment_action" id="actionIsGedetineerde">
+            <value name="TARGET">
+              <block type="fact_reference" id="targetIsGedetineerde">
+                <field name="OBJECT_TYPE">BURGER</field>
+                <value name="ATTRIBUTE">
+                  <block type="characteristic" id="charIsGedetineerde">
+                    <field name="CHARACTERISTIC_NAME">IS_GEDETINEERDE</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="SOURCE">
+              <block type="boolean_literal" id="boolTrueGedetineerde">
+                <field name="VALUE">TRUE</field>
+              </block>
+            </value>
+            <next>
+              <block type="assignment_action" id="actionZorgverzekeringPlicht">
+                <value name="TARGET">
+                  <block type="fact_reference" id="targetZorgverzekeringPlicht">
+                    <field name="OBJECT_TYPE">BURGER</field>
+                    <value name="ATTRIBUTE">
+                      <block type="characteristic" id="charZorgverzekeringPlicht">
+                        <field name="CHARACTERISTIC_NAME">HEEFT_ZORGVERZEKERING_PLICHT</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <value name="SOURCE">
+                  <block type="boolean_literal" id="boolTrueZorgverzekeringPlicht">
+                    <field name="VALUE">TRUE</field>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <statement name="CONDITIONS">
+          <block type="simple_condition" id="condVrijheidsbenemendeMaatregel">
+            <value name="LEFT">
+              <block type="fact_reference" id="factVrijheidsbenemendeMaatregel">
+                <field name="OBJECT_TYPE">BURGER</field>
+                <value name="ATTRIBUTE">
+                  <block type="characteristic" id="charVrijheidsbenemendeMaatregel">
+                    <field name="CHARACTERISTIC_NAME">VRIJHEIDSBENEMENDE_MAATREGEL</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <field name="OPERATOR">EQUALS</field>
+            <value name="RIGHT">
+              <block type="boolean_literal" id="boolTrueVrijheidsbenemend">
+                <field name="VALUE">TRUE</field>
+              </block>
+            </value>
           </block>
         </statement>
       </block>
@@ -606,6 +811,16 @@ function loadExampleRule(ruleName) {
       document.getElementById('outputRules').textContent = code;
 
       console.log('Successfully loaded example rule:', ruleName);
+
+      // Add click handlers to all blocks in the loaded rule
+      setTimeout(function () {
+        if (window.addClickHandlerToBlock) {
+          const allBlocks = workspace.getAllBlocks();
+          allBlocks.forEach(function (block) {
+            window.addClickHandlerToBlock(block);
+          });
+        }
+      }, 200);
     } catch (err) {
       console.error('Error loading example rule:', err);
       alert('Error loading example rule: ' + err.message);
