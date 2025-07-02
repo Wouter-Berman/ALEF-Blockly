@@ -491,15 +491,15 @@ const exampleRules = {
           </block>
         </statement>
         <statement name="CONDITIONS">
-          <block type="complex_condition" id="complexCondCompleteEligibility">
+          <block type="complex_condition" id="complexCondSimpleEligibility">
             <field name="MULTIPLICITY">ALL</field>
             <statement name="CONDITIONS">
-              <block type="simple_condition" id="condAgeEligibility">
+              <block type="simple_condition" id="condAgeMinimum">
                 <value name="LEFT">
-                  <block type="fact_reference" id="factAgeEligibility">
+                  <block type="fact_reference" id="factAge">
                     <field name="OBJECT_TYPE">BURGER</field>
                     <value name="ATTRIBUTE">
-                      <block type="attribute" id="attrAgeEligibility">
+                      <block type="attribute" id="attrAge">
                         <field name="ATTRIBUTE_NAME">LEEFTIJD</field>
                       </block>
                     </value>
@@ -507,17 +507,17 @@ const exampleRules = {
                 </value>
                 <field name="OPERATOR">GREATER_THAN_EQUALS</field>
                 <value name="RIGHT">
-                  <block type="parameter_reference" id="paramMinimumAgeEligibility">
+                  <block type="parameter_reference" id="paramMinimumAge">
                     <field name="PARAMETER_NAME">MINIMUM_AGE</field>
                   </block>
                 </value>
                 <next>
-                  <block type="simple_condition" id="condZVWEligibility">
+                  <block type="simple_condition" id="condIsVerzekerde">
                     <value name="LEFT">
-                      <block type="fact_reference" id="factZVWEligibility">
+                      <block type="fact_reference" id="factIsVerzekerde">
                         <field name="OBJECT_TYPE">BURGER</field>
                         <value name="ATTRIBUTE">
-                          <block type="characteristic" id="charZVWEligibility">
+                          <block type="characteristic" id="charIsVerzekerde">
                             <field name="CHARACTERISTIC_NAME">VERZEKERDE_VOLGENS_ZVW</field>
                           </block>
                         </value>
@@ -525,160 +525,10 @@ const exampleRules = {
                     </value>
                     <field name="OPERATOR">EQUALS</field>
                     <value name="RIGHT">
-                      <block type="boolean_literal" id="boolTrueZVWEligibility">
+                      <block type="boolean_literal" id="boolTrueVerzekerde">
                         <field name="VALUE">TRUE</field>
                       </block>
                     </value>
-                    <next>
-                      <block type="complex_condition" id="complexCondPartnerOrSingle">
-                        <field name="MULTIPLICITY">ANY</field>
-                        <statement name="CONDITIONS">
-                          <block type="complex_condition" id="complexCondPartnerEligibility">
-                            <field name="MULTIPLICITY">ALL</field>
-                            <statement name="CONDITIONS">
-                              <block type="simple_condition" id="condHasPartner">
-                                <value name="LEFT">
-                                  <block type="fact_reference" id="factHasPartnerCond">
-                                    <field name="OBJECT_TYPE">BURGER</field>
-                                    <value name="ATTRIBUTE">
-                                      <block type="characteristic" id="charHasPartnerCond">
-                                        <field name="CHARACTERISTIC_NAME">HEEFT_PARTNER</field>
-                                      </block>
-                                    </value>
-                                  </block>
-                                </value>
-                                <field name="OPERATOR">EQUALS</field>
-                                <value name="RIGHT">
-                                  <block type="boolean_literal" id="boolTrueHasPartner">
-                                    <field name="VALUE">TRUE</field>
-                                  </block>
-                                </value>
-                                <next>
-                                  <block type="simple_condition" id="condCombinedIncome">
-                                    <value name="LEFT">
-                                      <block type="math_operation" id="mathCombinedIncomeCheck">
-                                        <field name="OPERATOR">PLUS</field>
-                                        <value name="LEFT">
-                                          <block type="fact_reference" id="factIncomePartnerCheck">
-                                            <field name="OBJECT_TYPE">BURGER</field>
-                                            <value name="ATTRIBUTE">
-                                              <block type="attribute" id="attrIncomePartnerCheck">
-                                                <field name="ATTRIBUTE_NAME">INCOME</field>
-                                              </block>
-                                            </value>
-                                          </block>
-                                        </value>
-                                        <value name="RIGHT">
-                                          <block type="fact_reference" id="factPartnerIncomeCheck">
-                                            <field name="OBJECT_TYPE">BURGER</field>
-                                            <value name="ATTRIBUTE">
-                                              <block type="attribute" id="attrPartnerIncomeCheck">
-                                                <field name="ATTRIBUTE_NAME">PARTNER_INCOME</field>
-                                              </block>
-                                            </value>
-                                          </block>
-                                        </value>
-                                      </block>
-                                    </value>
-                                    <field name="OPERATOR">GREATER_THAN</field>
-                                    <value name="RIGHT">
-                                      <block type="parameter_reference" id="paramCombinedIncomeThreshold">
-                                        <field name="PARAMETER_NAME">COMBINED_INCOME_THRESHOLD</field>
-                                      </block>
-                                    </value>
-                                    <next>
-                                      <block type="simple_condition" id="condCombinedAssets">
-                                        <value name="LEFT">
-                                          <block type="fact_reference" id="factCombinedNetWorth">
-                                            <field name="OBJECT_TYPE">BURGER</field>
-                                            <value name="ATTRIBUTE">
-                                              <block type="attribute" id="attrCombinedNetWorth">
-                                                <field name="ATTRIBUTE_NAME">COMBINED_NET_WORTH</field>
-                                              </block>
-                                            </value>
-                                          </block>
-                                        </value>
-                                        <field name="OPERATOR">LESS_THAN_EQUALS</field>
-                                        <value name="RIGHT">
-                                          <block type="parameter_reference" id="paramCombinedAssetLimit">
-                                            <field name="PARAMETER_NAME">COMBINED_ASSET_LIMIT</field>
-                                          </block>
-                                        </value>
-                                      </block>
-                                    </next>
-                                  </block>
-                                </next>
-                              </block>
-                            </statement>
-                            <next>
-                              <block type="complex_condition" id="complexCondSingleEligibility">
-                                <field name="MULTIPLICITY">ALL</field>
-                                <statement name="CONDITIONS">
-                                  <block type="simple_condition" id="condNoPartner">
-                                    <value name="LEFT">
-                                      <block type="fact_reference" id="factNoPartnerCond">
-                                        <field name="OBJECT_TYPE">BURGER</field>
-                                        <value name="ATTRIBUTE">
-                                          <block type="characteristic" id="charNoPartnerCond">
-                                            <field name="CHARACTERISTIC_NAME">HEEFT_PARTNER</field>
-                                          </block>
-                                        </value>
-                                      </block>
-                                    </value>
-                                    <field name="OPERATOR">EQUALS</field>
-                                    <value name="RIGHT">
-                                      <block type="boolean_literal" id="boolFalseNoPartner">
-                                        <field name="VALUE">FALSE</field>
-                                      </block>
-                                    </value>
-                                    <next>
-                                      <block type="simple_condition" id="condSingleIncome">
-                                        <value name="LEFT">
-                                          <block type="fact_reference" id="factIncomeSingleCheck">
-                                            <field name="OBJECT_TYPE">BURGER</field>
-                                            <value name="ATTRIBUTE">
-                                              <block type="attribute" id="attrIncomeSingleCheck">
-                                                <field name="ATTRIBUTE_NAME">INCOME</field>
-                                              </block>
-                                            </value>
-                                          </block>
-                                        </value>
-                                        <field name="OPERATOR">GREATER_THAN</field>
-                                        <value name="RIGHT">
-                                          <block type="parameter_reference" id="paramIncomeThresholdSingleCheck">
-                                            <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
-                                          </block>
-                                        </value>
-                                        <next>
-                                          <block type="simple_condition" id="condSingleAssets">
-                                            <value name="LEFT">
-                                              <block type="fact_reference" id="factNetWorthSingleCheck">
-                                                <field name="OBJECT_TYPE">BURGER</field>
-                                                <value name="ATTRIBUTE">
-                                                  <block type="attribute" id="attrNetWorthSingleCheck">
-                                                    <field name="ATTRIBUTE_NAME">NET_WORTH</field>
-                                                  </block>
-                                                </value>
-                                              </block>
-                                            </value>
-                                            <field name="OPERATOR">LESS_THAN_EQUALS</field>
-                                            <value name="RIGHT">
-                                              <block type="parameter_reference" id="paramAssetLimitSingleCheck">
-                                                <field name="PARAMETER_NAME">ASSET_LIMIT_SINGLE</field>
-                                              </block>
-                                            </value>
-                                          </block>
-                                        </next>
-                                      </block>
-                                    </next>
-                                  </block>
-                                </statement>
-                              </block>
-                            </next>
-                          </block>
-                        </statement>
-                      </block>
-                    </next>
                   </block>
                 </next>
               </block>
