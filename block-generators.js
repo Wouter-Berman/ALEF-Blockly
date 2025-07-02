@@ -470,6 +470,32 @@ javascript.javascriptGenerator.forBlock['rounding'] = function (block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
+// Code generator voor if_then_else blok
+javascript.javascriptGenerator.forBlock['if_then_else'] = function (block) {
+  var condition =
+    Blockly.JavaScript.valueToCode(
+      block,
+      'CONDITION',
+      Blockly.JavaScript.ORDER_ATOMIC
+    ) || 'ontbrekende voorwaarde';
+  var thenValue =
+    Blockly.JavaScript.valueToCode(
+      block,
+      'THEN_VALUE',
+      Blockly.JavaScript.ORDER_ATOMIC
+    ) || 'ontbrekende dan-waarde';
+  var elseValue =
+    Blockly.JavaScript.valueToCode(
+      block,
+      'ELSE_VALUE',
+      Blockly.JavaScript.ORDER_ATOMIC
+    ) || 'ontbrekende anders-waarde';
+
+  var code = 'als ' + condition + ' dan ' + thenValue + ' anders ' + elseValue;
+
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
 // Functie om te controleren of alle code generators geregistreerd zijn
 function verifyCodeGenerators() {
   // Lijst van alle bloktypes die generators moeten hebben
@@ -492,6 +518,7 @@ function verifyCodeGenerators() {
     'math_operation',
     'minimum_maximum',
     'rounding',
+    'if_then_else',
   ];
 
   // Controleer of generators bestaan voor alle bloktypes

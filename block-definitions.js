@@ -295,6 +295,7 @@ Blockly.defineBlocksWithJsonArray([
           ['sum of', 'SUM_OF'],
           ['count of', 'COUNT_OF'],
           ['duration between', 'DURATION_BETWEEN'],
+          ['if then else', 'IF_THEN_ELSE'],
         ],
       },
     ],
@@ -530,6 +531,8 @@ Blockly.defineBlocksWithJsonArray([
             'INCOME THRESHOLD PARTNER PERCENTAGE',
             'INCOME_THRESHOLD_PARTNER_PERCENTAGE',
           ],
+          ['COMBINED_INCOME_THRESHOLD', 'COMBINED_INCOME_THRESHOLD'],
+          ['COMBINED_ASSET_LIMIT', 'COMBINED_ASSET_LIMIT'],
         ],
       },
     ],
@@ -657,6 +660,43 @@ Blockly.defineBlocksWithJsonArray([
     output: 'expression',
     colour: 290,
     tooltip: 'Round a value',
+    helpUrl: '',
+  },
+
+  // IF_THEN_ELSE conditional expression block
+  {
+    type: 'if_then_else',
+    message0: 'if %1 then %2 else %3',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'CONDITION',
+        check: ['fact_reference', 'expression'],
+      },
+      {
+        type: 'input_value',
+        name: 'THEN_VALUE',
+        check: [
+          'fact_reference',
+          'literal',
+          'expression',
+          'parameter_reference',
+        ],
+      },
+      {
+        type: 'input_value',
+        name: 'ELSE_VALUE',
+        check: [
+          'fact_reference',
+          'literal',
+          'expression',
+          'parameter_reference',
+        ],
+      },
+    ],
+    output: 'expression',
+    colour: 290,
+    tooltip: 'Conditional expression: if condition then value else other value',
     helpUrl: '',
   },
 ]);

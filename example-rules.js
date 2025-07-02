@@ -335,51 +335,147 @@ const exampleRules = {
                   </block>
                 </value>
                 <value name="SOURCE">
-                  <block type="minimum_maximum" id="minMaxCompleteCalc">
-                    <field name="FUNCTION">MAX</field>
-                    <value name="LEFT">
-                      <block type="literal" id="literalZeroComplete">
-                        <field name="VALUE">0</field>
-                        <field name="UNIT">EUR</field>
+                  <block type="if_then_else" id="ifThenElsePartnerCheck">
+                    <value name="CONDITION">
+                      <block type="fact_reference" id="factHasPartner">
+                        <field name="OBJECT_TYPE">BURGER</field>
+                        <value name="ATTRIBUTE">
+                          <block type="characteristic" id="charHasPartner">
+                            <field name="CHARACTERISTIC_NAME">HEEFT_PARTNER</field>
+                          </block>
+                        </value>
                       </block>
                     </value>
-                    <value name="RIGHT">
-                      <block type="math_operation" id="mathMainFormula">
-                        <field name="OPERATOR">MINUS</field>
+                    <value name="THEN_VALUE">
+                      <block type="minimum_maximum" id="minMaxPartnerCalc">
+                        <field name="FUNCTION">MAX</field>
                         <value name="LEFT">
-                          <block type="fact_reference" id="factStandardPremiumMain">
-                            <field name="OBJECT_TYPE">BURGER</field>
-                            <value name="ATTRIBUTE">
-                              <block type="attribute" id="attrStandardPremiumMain">
-                                <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
-                              </block>
-                            </value>
+                          <block type="literal" id="literalZeroPartner">
+                            <field name="VALUE">0</field>
+                            <field name="UNIT">EUR</field>
                           </block>
                         </value>
                         <value name="RIGHT">
-                          <block type="math_operation" id="mathReductionFormula">
-                            <field name="OPERATOR">MULTIPLY</field>
+                          <block type="math_operation" id="mathPartnerFormula">
+                            <field name="OPERATOR">MINUS</field>
                             <value name="LEFT">
-                              <block type="parameter_reference" id="paramReductionPerc">
-                                <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
-                              </block>
-                            </value>
-                            <value name="RIGHT">
-                              <block type="math_operation" id="mathIncomeAboveThresholdCalc">
-                                <field name="OPERATOR">MINUS</field>
+                              <block type="math_operation" id="mathDoubleStandardPremium">
+                                <field name="OPERATOR">MULTIPLY</field>
                                 <value name="LEFT">
-                                  <block type="fact_reference" id="factMainIncome">
+                                  <block type="literal" id="literalTwo">
+                                    <field name="VALUE">2</field>
+                                    <field name="UNIT">NONE</field>
+                                  </block>
+                                </value>
+                                <value name="RIGHT">
+                                  <block type="fact_reference" id="factStandardPremiumPartner">
                                     <field name="OBJECT_TYPE">BURGER</field>
                                     <value name="ATTRIBUTE">
-                                      <block type="attribute" id="attrMainIncome">
-                                        <field name="ATTRIBUTE_NAME">INCOME</field>
+                                      <block type="attribute" id="attrStandardPremiumPartner">
+                                        <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
                                       </block>
                                     </value>
                                   </block>
                                 </value>
+                              </block>
+                            </value>
+                            <value name="RIGHT">
+                              <block type="math_operation" id="mathPartnerReductionFormula">
+                                <field name="OPERATOR">MULTIPLY</field>
+                                <value name="LEFT">
+                                  <block type="parameter_reference" id="paramReductionPercPartner">
+                                    <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
+                                  </block>
+                                </value>
                                 <value name="RIGHT">
-                                  <block type="parameter_reference" id="paramIncomeThresholdSingle">
-                                    <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
+                                  <block type="math_operation" id="mathCombinedIncomeAboveThreshold">
+                                    <field name="OPERATOR">MINUS</field>
+                                    <value name="LEFT">
+                                      <block type="math_operation" id="mathCombinedIncome">
+                                        <field name="OPERATOR">PLUS</field>
+                                        <value name="LEFT">
+                                          <block type="fact_reference" id="factIncomePartner">
+                                            <field name="OBJECT_TYPE">BURGER</field>
+                                            <value name="ATTRIBUTE">
+                                              <block type="attribute" id="attrIncomePartner">
+                                                <field name="ATTRIBUTE_NAME">INCOME</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <value name="RIGHT">
+                                          <block type="fact_reference" id="factPartnerIncome">
+                                            <field name="OBJECT_TYPE">BURGER</field>
+                                            <value name="ATTRIBUTE">
+                                              <block type="attribute" id="attrPartnerIncome">
+                                                <field name="ATTRIBUTE_NAME">PARTNER_INCOME</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <value name="RIGHT">
+                                      <block type="parameter_reference" id="paramCombinedThreshold">
+                                        <field name="PARAMETER_NAME">COMBINED_INCOME_THRESHOLD</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <value name="ELSE_VALUE">
+                      <block type="minimum_maximum" id="minMaxSingleCalc">
+                        <field name="FUNCTION">MAX</field>
+                        <value name="LEFT">
+                          <block type="literal" id="literalZeroSingle">
+                            <field name="VALUE">0</field>
+                            <field name="UNIT">EUR</field>
+                          </block>
+                        </value>
+                        <value name="RIGHT">
+                          <block type="math_operation" id="mathSingleFormula">
+                            <field name="OPERATOR">MINUS</field>
+                            <value name="LEFT">
+                              <block type="fact_reference" id="factStandardPremiumSingle">
+                                <field name="OBJECT_TYPE">BURGER</field>
+                                <value name="ATTRIBUTE">
+                                  <block type="attribute" id="attrStandardPremiumSingle">
+                                    <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <value name="RIGHT">
+                              <block type="math_operation" id="mathSingleReductionFormula">
+                                <field name="OPERATOR">MULTIPLY</field>
+                                <value name="LEFT">
+                                  <block type="parameter_reference" id="paramReductionPercSingle">
+                                    <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
+                                  </block>
+                                </value>
+                                <value name="RIGHT">
+                                  <block type="math_operation" id="mathSingleIncomeAboveThreshold">
+                                    <field name="OPERATOR">MINUS</field>
+                                    <value name="LEFT">
+                                      <block type="fact_reference" id="factIncomeSingle">
+                                        <field name="OBJECT_TYPE">BURGER</field>
+                                        <value name="ATTRIBUTE">
+                                          <block type="attribute" id="attrIncomeSingle">
+                                            <field name="ATTRIBUTE_NAME">INCOME</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <value name="RIGHT">
+                                      <block type="parameter_reference" id="paramIncomeThresholdSingle">
+                                        <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
+                                      </block>
+                                    </value>
                                   </block>
                                 </value>
                               </block>
@@ -434,43 +530,153 @@ const exampleRules = {
                       </block>
                     </value>
                     <next>
-                      <block type="simple_condition" id="condAssetEligibility">
-                        <value name="LEFT">
-                          <block type="fact_reference" id="factNetWorthEligibility">
-                            <field name="OBJECT_TYPE">BURGER</field>
-                            <value name="ATTRIBUTE">
-                              <block type="attribute" id="attrNetWorthEligibility">
-                                <field name="ATTRIBUTE_NAME">NET_WORTH</field>
-                              </block>
-                            </value>
-                          </block>
-                        </value>
-                        <field name="OPERATOR">LESS_THAN_EQUALS</field>
-                        <value name="RIGHT">
-                          <block type="parameter_reference" id="paramAssetLimitSingleEligibility">
-                            <field name="PARAMETER_NAME">ASSET_LIMIT_SINGLE</field>
-                          </block>
-                        </value>
-                        <next>
-                          <block type="simple_condition" id="condIncomeAboveThreshold">
-                            <value name="LEFT">
-                              <block type="fact_reference" id="factIncomeEligibility">
-                                <field name="OBJECT_TYPE">BURGER</field>
-                                <value name="ATTRIBUTE">
-                                  <block type="attribute" id="attrIncomeEligibility">
-                                    <field name="ATTRIBUTE_NAME">INCOME</field>
+                      <block type="complex_condition" id="complexCondPartnerOrSingle">
+                        <field name="MULTIPLICITY">ANY</field>
+                        <statement name="CONDITIONS">
+                          <block type="complex_condition" id="complexCondPartnerEligibility">
+                            <field name="MULTIPLICITY">ALL</field>
+                            <statement name="CONDITIONS">
+                              <block type="simple_condition" id="condHasPartner">
+                                <value name="LEFT">
+                                  <block type="fact_reference" id="factHasPartnerCond">
+                                    <field name="OBJECT_TYPE">BURGER</field>
+                                    <value name="ATTRIBUTE">
+                                      <block type="characteristic" id="charHasPartnerCond">
+                                        <field name="CHARACTERISTIC_NAME">HEEFT_PARTNER</field>
+                                      </block>
+                                    </value>
                                   </block>
                                 </value>
+                                <field name="OPERATOR">EQUALS</field>
+                                <value name="RIGHT">
+                                  <block type="boolean_literal" id="boolTrueHasPartner">
+                                    <field name="VALUE">TRUE</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="simple_condition" id="condCombinedIncome">
+                                    <value name="LEFT">
+                                      <block type="math_operation" id="mathCombinedIncomeCheck">
+                                        <field name="OPERATOR">PLUS</field>
+                                        <value name="LEFT">
+                                          <block type="fact_reference" id="factIncomePartnerCheck">
+                                            <field name="OBJECT_TYPE">BURGER</field>
+                                            <value name="ATTRIBUTE">
+                                              <block type="attribute" id="attrIncomePartnerCheck">
+                                                <field name="ATTRIBUTE_NAME">INCOME</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <value name="RIGHT">
+                                          <block type="fact_reference" id="factPartnerIncomeCheck">
+                                            <field name="OBJECT_TYPE">BURGER</field>
+                                            <value name="ATTRIBUTE">
+                                              <block type="attribute" id="attrPartnerIncomeCheck">
+                                                <field name="ATTRIBUTE_NAME">PARTNER_INCOME</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <field name="OPERATOR">GREATER_THAN</field>
+                                    <value name="RIGHT">
+                                      <block type="parameter_reference" id="paramCombinedIncomeThreshold">
+                                        <field name="PARAMETER_NAME">COMBINED_INCOME_THRESHOLD</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="simple_condition" id="condCombinedAssets">
+                                        <value name="LEFT">
+                                          <block type="fact_reference" id="factCombinedNetWorth">
+                                            <field name="OBJECT_TYPE">BURGER</field>
+                                            <value name="ATTRIBUTE">
+                                              <block type="attribute" id="attrCombinedNetWorth">
+                                                <field name="ATTRIBUTE_NAME">COMBINED_NET_WORTH</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <field name="OPERATOR">LESS_THAN_EQUALS</field>
+                                        <value name="RIGHT">
+                                          <block type="parameter_reference" id="paramCombinedAssetLimit">
+                                            <field name="PARAMETER_NAME">COMBINED_ASSET_LIMIT</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
                               </block>
-                            </value>
-                            <field name="OPERATOR">GREATER_THAN</field>
-                            <value name="RIGHT">
-                              <block type="parameter_reference" id="paramIncomeThresholdEligibility">
-                                <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
+                            </statement>
+                            <next>
+                              <block type="complex_condition" id="complexCondSingleEligibility">
+                                <field name="MULTIPLICITY">ALL</field>
+                                <statement name="CONDITIONS">
+                                  <block type="simple_condition" id="condNoPartner">
+                                    <value name="LEFT">
+                                      <block type="fact_reference" id="factNoPartnerCond">
+                                        <field name="OBJECT_TYPE">BURGER</field>
+                                        <value name="ATTRIBUTE">
+                                          <block type="characteristic" id="charNoPartnerCond">
+                                            <field name="CHARACTERISTIC_NAME">HEEFT_PARTNER</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <field name="OPERATOR">EQUALS</field>
+                                    <value name="RIGHT">
+                                      <block type="boolean_literal" id="boolFalseNoPartner">
+                                        <field name="VALUE">FALSE</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="simple_condition" id="condSingleIncome">
+                                        <value name="LEFT">
+                                          <block type="fact_reference" id="factIncomeSingleCheck">
+                                            <field name="OBJECT_TYPE">BURGER</field>
+                                            <value name="ATTRIBUTE">
+                                              <block type="attribute" id="attrIncomeSingleCheck">
+                                                <field name="ATTRIBUTE_NAME">INCOME</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <field name="OPERATOR">GREATER_THAN</field>
+                                        <value name="RIGHT">
+                                          <block type="parameter_reference" id="paramIncomeThresholdSingleCheck">
+                                            <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="simple_condition" id="condSingleAssets">
+                                            <value name="LEFT">
+                                              <block type="fact_reference" id="factNetWorthSingleCheck">
+                                                <field name="OBJECT_TYPE">BURGER</field>
+                                                <value name="ATTRIBUTE">
+                                                  <block type="attribute" id="attrNetWorthSingleCheck">
+                                                    <field name="ATTRIBUTE_NAME">NET_WORTH</field>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <field name="OPERATOR">LESS_THAN_EQUALS</field>
+                                            <value name="RIGHT">
+                                              <block type="parameter_reference" id="paramAssetLimitSingleCheck">
+                                                <field name="PARAMETER_NAME">ASSET_LIMIT_SINGLE</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </statement>
                               </block>
-                            </value>
+                            </next>
                           </block>
-                        </next>
+                        </statement>
                       </block>
                     </next>
                   </block>
