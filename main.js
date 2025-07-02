@@ -273,6 +273,14 @@ function registerButtonCallbacks() {
         loadExampleRule('compliance_rule_example');
       }
     },
+    loadZorgtoeslagOfficialCompleteRuleExample: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
+        loadExampleRule('zorgtoeslag_official_complete_rule_example');
+      }
+    },
   };
 
   const objectModelCallbacks = {
@@ -282,6 +290,14 @@ function registerButtonCallbacks() {
         currentWorkspaceType === 'objectModel'
       ) {
         loadExampleObjectModel('flight_object_model_example');
+      }
+    },
+    loadZorgtoeslagObjectModelExample: function () {
+      if (
+        typeof loadExampleObjectModel === 'function' &&
+        currentWorkspaceType === 'objectModel'
+      ) {
+        loadExampleObjectModel('zorgtoeslag_object_model_example');
       }
     },
   };

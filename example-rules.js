@@ -124,7 +124,7 @@ const exampleRules = {
                     </statement>
                   </block>
                 </value>
-                <field name="OPERATOR">IS EQUAL TO</field>
+                <field name="OPERATOR">EQUALS</field>
                 <value name="RIGHT">
                   <block type="boolean_literal" id="boolTrue1">
                     <field name="VALUE">TRUE</field>
@@ -147,7 +147,7 @@ const exampleRules = {
                         </statement>
                       </block>
                     </value>
-                    <field name="OPERATOR">IS NOT EQUAL TO</field>
+                    <field name="OPERATOR">NOT_EQUALS</field>
                     <value name="RIGHT">
                       <block type="boolean_literal" id="boolTrue2">
                         <field name="VALUE">TRUE</field>
@@ -170,7 +170,7 @@ const exampleRules = {
                             </statement>
                           </block>
                         </value>
-                        <field name="OPERATOR">IS GREATER THAN</field>
+                        <field name="OPERATOR">GREATER_THAN</field>
                         <value name="RIGHT">
                           <block type="literal" id="literalZeroKm">
                             <field name="VALUE">0</field>
@@ -194,7 +194,7 @@ const exampleRules = {
                                 </statement>
                               </block>
                             </value>
-                            <field name="OPERATOR">IS LESS THAN OR EQUAL TO</field>
+                            <field name="OPERATOR">LESS_THAN_EQUALS</field>
                             <value name="RIGHT">
                               <block type="parameter_reference" id="paramUpperLimit">
                                 <field name="PARAMETER_NAME">BOVENGRENS_AFSTAND_EERSTE_SCHIJF</field>
@@ -263,7 +263,7 @@ const exampleRules = {
                     </statement>
                   </block>
                 </value>
-                <field name="OPERATOR">IS EQUAL TO</field>
+                <field name="OPERATOR">EQUALS</field>
                 <value name="RIGHT">
                   <block type="boolean_literal" id="boolTrueClimate">
                     <field name="VALUE">TRUE</field>
@@ -281,12 +281,203 @@ const exampleRules = {
                         </value>
                       </block>
                     </value>
-                    <field name="OPERATOR">IS EQUAL TO</field>
+                    <field name="OPERATOR">EQUALS</field>
                     <value name="RIGHT">
                       <block type="boolean_literal" id="boolTrueDiscount">
                         <field name="VALUE">TRUE</field>
                       </block>
                     </value>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </xml>
+  `,
+
+  // Officiële Zorgtoeslagwet 2025: volledige zorgtoeslag hoogte berekening (exact 1-op-1 vertaling)
+  zorgtoeslag_official_complete_rule_example: `
+    <xml xmlns="https://developers.google.com/blockly/xml">
+      <block type="business_rule" id="ruleOfficialCompleteCalc" x="20" y="20">
+        <field name="RULE_NAME">zorgtoeslag is_verzekerde en hoogte_toeslag volgens Zorgtoeslagwet 2025</field>
+        <field name="RULE_ID">zorgtoeslag-volledig-2025</field>
+        <field name="VALID_FROM">2025-01-01</field>
+        <field name="VALID_UNTIL"></field>
+        <statement name="ACTIONS">
+          <block type="assignment_action" id="actionIsVerzekerde">
+            <value name="TARGET">
+              <block type="fact_reference" id="targetIsVerzekerde">
+                <field name="OBJECT_TYPE">BURGER</field>
+                <value name="ATTRIBUTE">
+                  <block type="characteristic" id="charIsVerzekerde">
+                    <field name="CHARACTERISTIC_NAME">VERZEKERDE_ZORGTOESLAG</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="SOURCE">
+              <block type="boolean_literal" id="boolTrueIsVerzekerde">
+                <field name="VALUE">TRUE</field>
+              </block>
+            </value>
+            <next>
+              <block type="assignment_action" id="actionHoogteToeslag">
+                <value name="TARGET">
+                  <block type="fact_reference" id="targetHoogteToeslagComplete">
+                    <field name="OBJECT_TYPE">ZORGTOESLAG</field>
+                    <value name="ATTRIBUTE">
+                      <block type="attribute" id="attrHoogteToeslagComplete">
+                        <field name="ATTRIBUTE_NAME">HOOGTE_TOESLAG</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <value name="SOURCE">
+                  <block type="expression" id="exprCompleteCalculation">
+                    <field name="FUNCTION_NAME">CALCULATE_AS</field>
+                    <statement name="PARAMETERS">
+                      <block type="minimum_maximum" id="minMaxCompleteCalc">
+                        <field name="FUNCTION">MAX</field>
+                        <value name="LEFT">
+                          <block type="literal" id="literalZeroComplete">
+                            <field name="VALUE">0</field>
+                            <field name="UNIT">EUR</field>
+                          </block>
+                        </value>
+                        <value name="RIGHT">
+                          <block type="math_operation" id="mathMainFormula">
+                            <field name="OPERATOR">MINUS</field>
+                            <value name="LEFT">
+                              <block type="fact_reference" id="factStandardPremiumMain">
+                                <field name="OBJECT_TYPE">BURGER</field>
+                                <value name="ATTRIBUTE">
+                                  <block type="attribute" id="attrStandardPremiumMain">
+                                    <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <value name="RIGHT">
+                              <block type="math_operation" id="mathReductionFormula">
+                                <field name="OPERATOR">MULTIPLIED BY</field>
+                                <value name="LEFT">
+                                  <block type="parameter_reference" id="paramReductionPerc">
+                                    <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
+                                  </block>
+                                </value>
+                                <value name="RIGHT">
+                                  <block type="math_operation" id="mathIncomeAboveThresholdCalc">
+                                    <field name="OPERATOR">MINUS</field>
+                                    <value name="LEFT">
+                                      <block type="fact_reference" id="factMainIncome">
+                                        <field name="OBJECT_TYPE">BURGER</field>
+                                        <value name="ATTRIBUTE">
+                                          <block type="attribute" id="attrMainIncome">
+                                            <field name="ATTRIBUTE_NAME">INCOME</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <value name="RIGHT">
+                                      <block type="parameter_reference" id="paramIncomeThresholdSingle">
+                                        <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                      </block>
+                    </statement>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <statement name="CONDITIONS">
+          <block type="complex_condition" id="complexCondCompleteEligibility">
+            <field name="MULTIPLICITY">ALL</field>
+            <statement name="CONDITIONS">
+              <block type="simple_condition" id="condAgeEligibility">
+                <value name="LEFT">
+                  <block type="fact_reference" id="factAgeEligibility">
+                    <field name="OBJECT_TYPE">BURGER</field>
+                    <value name="ATTRIBUTE">
+                      <block type="attribute" id="attrAgeEligibility">
+                        <field name="ATTRIBUTE_NAME">LEEFTIJD</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <field name="OPERATOR">GREATER_THAN_EQUALS</field>
+                <value name="RIGHT">
+                  <block type="parameter_reference" id="paramMinimumAgeEligibility">
+                    <field name="PARAMETER_NAME">MINIMUM_AGE</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="simple_condition" id="condZVWEligibility">
+                    <value name="LEFT">
+                      <block type="fact_reference" id="factZVWEligibility">
+                        <field name="OBJECT_TYPE">BURGER</field>
+                        <value name="ATTRIBUTE">
+                          <block type="characteristic" id="charZVWEligibility">
+                            <field name="CHARACTERISTIC_NAME">VERZEKERDE_VOLGENS_ZVW</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <field name="OPERATOR">EQUALS</field>
+                    <value name="RIGHT">
+                      <block type="boolean_literal" id="boolTrueZVWEligibility">
+                        <field name="VALUE">TRUE</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="simple_condition" id="condAssetEligibility">
+                        <value name="LEFT">
+                          <block type="fact_reference" id="factNetWorthEligibility">
+                            <field name="OBJECT_TYPE">BURGER</field>
+                            <value name="ATTRIBUTE">
+                              <block type="attribute" id="attrNetWorthEligibility">
+                                <field name="ATTRIBUTE_NAME">NET_WORTH</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <field name="OPERATOR">LESS_THAN_EQUALS</field>
+                        <value name="RIGHT">
+                          <block type="parameter_reference" id="paramAssetLimitSingleEligibility">
+                            <field name="PARAMETER_NAME">ASSET_LIMIT_SINGLE</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="simple_condition" id="condIncomeAboveThreshold">
+                            <value name="LEFT">
+                              <block type="fact_reference" id="factIncomeEligibility">
+                                <field name="OBJECT_TYPE">BURGER</field>
+                                <value name="ATTRIBUTE">
+                                  <block type="attribute" id="attrIncomeEligibility">
+                                    <field name="ATTRIBUTE_NAME">INCOME</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <field name="OPERATOR">GREATER_THAN</field>
+                            <value name="RIGHT">
+                              <block type="parameter_reference" id="paramIncomeThresholdEligibility">
+                                <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
                   </block>
                 </next>
               </block>

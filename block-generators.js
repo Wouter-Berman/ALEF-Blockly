@@ -26,12 +26,9 @@ javascript.javascriptGenerator.forBlock['business_rule'] = function (block) {
   var ruleId = block.getFieldValue('RULE_ID');
   var validFrom = block.getFieldValue('VALID_FROM');
   var validUntil = block.getFieldValue('VALID_UNTIL');
-  var action =
-    Blockly.JavaScript.valueToCode(
-      block,
-      'ACTION',
-      Blockly.JavaScript.ORDER_ATOMIC
-    ) || 'ontbrekende actie';
+  var actions =
+    Blockly.JavaScript.statementToCode(block, 'ACTIONS') ||
+    'ontbrekende acties';
   var conditions = Blockly.JavaScript.statementToCode(block, 'CONDITIONS');
 
   var code = 'Regel ' + ruleName + '\n';
@@ -41,8 +38,8 @@ javascript.javascriptGenerator.forBlock['business_rule'] = function (block) {
   }
   code += '\n';
 
-  // Voeg de actie toe (het action blok bevat target, operator en source)
-  code += action;
+  // Voeg de acties toe
+  code += actions;
 
   if (conditions && conditions.trim()) {
     code += '\nindien ' + conditions.trim();
@@ -80,9 +77,9 @@ javascript.javascriptGenerator.forBlock['assignment_action'] = function (
     }
   }
 
-  var code = target + ' ' + assignmentPhrase + ' ' + source;
+  var code = target + ' ' + assignmentPhrase + ' ' + source + '\n';
 
-  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+  return code;
 };
 
 // Code generator voor het compliance action blok
@@ -128,6 +125,9 @@ javascript.javascriptGenerator.forBlock['object'] = function (block) {
     NATUURLIJK_PERSOON: 'de natuurlijk persoon',
     CONTINGENT_TREINMILES: 'het contingent treinmiles',
     UITWORPMELDING: 'de uitworpmelding',
+    BURGER: 'de burger',
+    ZORGTOESLAG: 'de zorgtoeslag',
+    ZORGVERZEKERAAR: 'de zorgverzekeraar',
   };
 
   var code = objectTypeMap[objectType] || objectType;
@@ -137,37 +137,32 @@ javascript.javascriptGenerator.forBlock['object'] = function (block) {
 
 // Code generator voor fact reference blok (aangepast om optioneel object te gebruiken)
 javascript.javascriptGenerator.forBlock['fact_reference'] = function (block) {
-  var object = Blockly.JavaScript.valueToCode(
-    block,
-    'OBJECT',
-    Blockly.JavaScript.ORDER_ATOMIC
-  );
-  var roles = Blockly.JavaScript.statementToCode(block, 'ROLES');
+  var objectType = block.getFieldValue('OBJECT_TYPE');
   var attribute = Blockly.JavaScript.valueToCode(
     block,
     'ATTRIBUTE',
     Blockly.JavaScript.ORDER_ATOMIC
   );
 
+  // Vertaal interne OBJECT_TYPE constante naar weergavenaam (in het Nederlands)
+  var objectTypeMap = {
+    VLUCHT: 'de vlucht',
+    NATUURLIJK_PERSOON: 'de natuurlijk persoon',
+    CONTINGENT_TREINMILES: 'het contingent treinmiles',
+    UITWORPMELDING: 'de uitworpmelding',
+    BURGER: 'de burger',
+    ZORGTOESLAG: 'de zorgtoeslag',
+    ZORGVERZEKERAAR: 'de zorgverzekeraar',
+  };
+
+  var objectText = objectTypeMap[objectType] || objectType;
   var code = '';
 
   // Als we een attribuut hebben, voeg het toe
   if (attribute) {
-    if (roles && roles.trim()) {
-      code = attribute + ' van ' + roles.trim();
-    } else if (object) {
-      code = attribute + ' van ' + object;
-    } else {
-      code = attribute;
-    }
+    code = attribute + ' van ' + objectText;
   } else {
-    if (roles && roles.trim()) {
-      code = roles.trim();
-    } else if (object) {
-      code = object;
-    } else {
-      code = 'ontbrekende feitreferentie';
-    }
+    code = objectText;
   }
 
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
