@@ -335,56 +335,51 @@ const exampleRules = {
                   </block>
                 </value>
                 <value name="SOURCE">
-                  <block type="expression" id="exprCompleteCalculation">
-                    <field name="FUNCTION_NAME">CALCULATE_AS</field>
-                    <statement name="PARAMETERS">
-                      <block type="minimum_maximum" id="minMaxCompleteCalc">
-                        <field name="FUNCTION">MAX</field>
+                  <block type="minimum_maximum" id="minMaxCompleteCalc">
+                    <field name="FUNCTION">MAX</field>
+                    <value name="LEFT">
+                      <block type="literal" id="literalZeroComplete">
+                        <field name="VALUE">0</field>
+                        <field name="UNIT">EUR</field>
+                      </block>
+                    </value>
+                    <value name="RIGHT">
+                      <block type="math_operation" id="mathMainFormula">
+                        <field name="OPERATOR">MINUS</field>
                         <value name="LEFT">
-                          <block type="literal" id="literalZeroComplete">
-                            <field name="VALUE">0</field>
-                            <field name="UNIT">EUR</field>
+                          <block type="fact_reference" id="factStandardPremiumMain">
+                            <field name="OBJECT_TYPE">BURGER</field>
+                            <value name="ATTRIBUTE">
+                              <block type="attribute" id="attrStandardPremiumMain">
+                                <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
+                              </block>
+                            </value>
                           </block>
                         </value>
                         <value name="RIGHT">
-                          <block type="math_operation" id="mathMainFormula">
-                            <field name="OPERATOR">MINUS</field>
+                          <block type="math_operation" id="mathReductionFormula">
+                            <field name="OPERATOR">MULTIPLY</field>
                             <value name="LEFT">
-                              <block type="fact_reference" id="factStandardPremiumMain">
-                                <field name="OBJECT_TYPE">BURGER</field>
-                                <value name="ATTRIBUTE">
-                                  <block type="attribute" id="attrStandardPremiumMain">
-                                    <field name="ATTRIBUTE_NAME">STANDAARDPREMIE</field>
-                                  </block>
-                                </value>
+                              <block type="parameter_reference" id="paramReductionPerc">
+                                <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
                               </block>
                             </value>
                             <value name="RIGHT">
-                              <block type="math_operation" id="mathReductionFormula">
-                                <field name="OPERATOR">MULTIPLIED BY</field>
+                              <block type="math_operation" id="mathIncomeAboveThresholdCalc">
+                                <field name="OPERATOR">MINUS</field>
                                 <value name="LEFT">
-                                  <block type="parameter_reference" id="paramReductionPerc">
-                                    <field name="PARAMETER_NAME">REDUCTION_PERCENTAGE</field>
+                                  <block type="fact_reference" id="factMainIncome">
+                                    <field name="OBJECT_TYPE">BURGER</field>
+                                    <value name="ATTRIBUTE">
+                                      <block type="attribute" id="attrMainIncome">
+                                        <field name="ATTRIBUTE_NAME">INCOME</field>
+                                      </block>
+                                    </value>
                                   </block>
                                 </value>
                                 <value name="RIGHT">
-                                  <block type="math_operation" id="mathIncomeAboveThresholdCalc">
-                                    <field name="OPERATOR">MINUS</field>
-                                    <value name="LEFT">
-                                      <block type="fact_reference" id="factMainIncome">
-                                        <field name="OBJECT_TYPE">BURGER</field>
-                                        <value name="ATTRIBUTE">
-                                          <block type="attribute" id="attrMainIncome">
-                                            <field name="ATTRIBUTE_NAME">INCOME</field>
-                                          </block>
-                                        </value>
-                                      </block>
-                                    </value>
-                                    <value name="RIGHT">
-                                      <block type="parameter_reference" id="paramIncomeThresholdSingle">
-                                        <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
-                                      </block>
-                                    </value>
+                                  <block type="parameter_reference" id="paramIncomeThresholdSingle">
+                                    <field name="PARAMETER_NAME">INCOME_THRESHOLD_SINGLE</field>
                                   </block>
                                 </value>
                               </block>
@@ -392,7 +387,7 @@ const exampleRules = {
                           </block>
                         </value>
                       </block>
-                    </statement>
+                    </value>
                   </block>
                 </value>
               </block>
