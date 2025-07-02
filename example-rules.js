@@ -674,70 +674,78 @@ const exampleRules = {
     </xml>
   `,
 
-  // Penitentiaire Beginselenwet regel
+  // Penitentiaire Beginselenwet regel (exact volgens YAML)
   penitentiaire_beginselenwet_rule: `
     <xml xmlns="https://developers.google.com/blockly/xml">
       <block type="business_rule" id="rulePenitentiaireBeginselenwet" x="20" y="20">
-        <field name="RULE_NAME">Penitentiaire Beginselenwet - zorgverzekering status</field>
+        <field name="RULE_NAME">Bepalen detentiestatus volgens Penitentiaire Beginselenwet</field>
         <field name="RULE_ID">penitentiaire-beginselenwet-01</field>
-        <field name="VALID_FROM">2025-01-01</field>
+        <field name="VALID_FROM">2022-01-01</field>
         <field name="VALID_UNTIL"></field>
         <statement name="ACTIONS">
-          <block type="assignment_action" id="actionIsGedetineerde">
+          <block type="assignment_action" id="actionIsIncarcerated">
             <value name="TARGET">
-              <block type="fact_reference" id="targetIsGedetineerde">
+              <block type="fact_reference" id="targetIsIncarcerated">
                 <field name="OBJECT_TYPE">BURGER</field>
                 <value name="ATTRIBUTE">
-                  <block type="characteristic" id="charIsGedetineerde">
-                    <field name="CHARACTERISTIC_NAME">IS_GEDETINEERDE</field>
+                  <block type="characteristic" id="charIsIncarcerated">
+                    <field name="CHARACTERISTIC_NAME">IS_INCARCERATED</field>
                   </block>
                 </value>
               </block>
             </value>
             <value name="SOURCE">
-              <block type="boolean_literal" id="boolTrueGedetineerde">
+              <block type="boolean_literal" id="boolTrueIncarcerated">
                 <field name="VALUE">TRUE</field>
               </block>
             </value>
-            <next>
-              <block type="assignment_action" id="actionZorgverzekeringPlicht">
-                <value name="TARGET">
-                  <block type="fact_reference" id="targetZorgverzekeringPlicht">
+          </block>
+        </statement>
+        <statement name="CONDITIONS">
+          <block type="complex_condition" id="complexCondDetention">
+            <field name="MULTIPLICITY">ALL</field>
+            <statement name="CONDITIONS">
+              <block type="simple_condition" id="condFacilityType">
+                <value name="LEFT">
+                  <block type="fact_reference" id="factFacilityType">
                     <field name="OBJECT_TYPE">BURGER</field>
                     <value name="ATTRIBUTE">
-                      <block type="characteristic" id="charZorgverzekeringPlicht">
-                        <field name="CHARACTERISTIC_NAME">HEEFT_ZORGVERZEKERING_PLICHT</field>
+                      <block type="attribute" id="attrFacilityType">
+                        <field name="ATTRIBUTE_NAME">FACILITY_TYPE</field>
                       </block>
                     </value>
                   </block>
                 </value>
-                <value name="SOURCE">
-                  <block type="boolean_literal" id="boolTrueZorgverzekeringPlicht">
-                    <field name="VALUE">TRUE</field>
+                <field name="OPERATOR">EQUALS</field>
+                <value name="RIGHT">
+                  <block type="literal" id="literalPenitentiair">
+                    <field name="VALUE">PENITENTIAIRE_INRICHTING</field>
+                    <field name="UNIT">NONE</field>
                   </block>
                 </value>
-              </block>
-            </next>
-          </block>
-        </statement>
-        <statement name="CONDITIONS">
-          <block type="simple_condition" id="condVrijheidsbenemendeMaatregel">
-            <value name="LEFT">
-              <block type="fact_reference" id="factVrijheidsbenemendeMaatregel">
-                <field name="OBJECT_TYPE">BURGER</field>
-                <value name="ATTRIBUTE">
-                  <block type="characteristic" id="charVrijheidsbenemendeMaatregel">
-                    <field name="CHARACTERISTIC_NAME">VRIJHEIDSBENEMENDE_MAATREGEL</field>
+                <next>
+                  <block type="simple_condition" id="condDetentionStatus">
+                    <value name="LEFT">
+                      <block type="fact_reference" id="factDetentionStatus">
+                        <field name="OBJECT_TYPE">BURGER</field>
+                        <value name="ATTRIBUTE">
+                          <block type="attribute" id="attrDetentionStatus">
+                            <field name="ATTRIBUTE_NAME">DETENTION_STATUS</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <field name="OPERATOR">EQUALS</field>
+                    <value name="RIGHT">
+                      <block type="literal" id="literalIngesloten">
+                        <field name="VALUE">INGESLOTEN</field>
+                        <field name="UNIT">NONE</field>
+                      </block>
+                    </value>
                   </block>
-                </value>
+                </next>
               </block>
-            </value>
-            <field name="OPERATOR">EQUALS</field>
-            <value name="RIGHT">
-              <block type="boolean_literal" id="boolTrueVrijheidsbenemend">
-                <field name="VALUE">TRUE</field>
-              </block>
-            </value>
+            </statement>
           </block>
         </statement>
       </block>
