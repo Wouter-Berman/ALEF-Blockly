@@ -606,7 +606,7 @@ const exampleRules = {
                         <value name="LEFT">
                           <block type="rule_output_reference" id="outputPenitentiaireIsGedetineerde">
                             <field name="RULE_ID">penitentiaire-beginselenwet-01</field>
-                            <field name="OUTPUT_NAME">is_gedetineerde</field>
+                            <field name="OUTPUT_NAME">is_incarcerated</field>
                           </block>
                         </value>
                         <field name="OPERATOR">EQUALS</field>
@@ -705,43 +705,95 @@ const exampleRules = {
           <block type="complex_condition" id="complexCondDetention">
             <field name="MULTIPLICITY">ALL</field>
             <statement name="CONDITIONS">
-              <block type="simple_condition" id="condFacilityType">
-                <value name="LEFT">
-                  <block type="fact_reference" id="factFacilityType">
-                    <field name="OBJECT_TYPE">BURGER</field>
-                    <value name="ATTRIBUTE">
-                      <block type="attribute" id="attrFacilityType">
-                        <field name="ATTRIBUTE_NAME">FACILITY_TYPE</field>
-                      </block>
-                    </value>
-                  </block>
-                </value>
-                <field name="OPERATOR">EQUALS</field>
-                <value name="RIGHT">
-                  <block type="literal" id="literalPenitentiair">
-                    <field name="VALUE">PENITENTIAIRE_INRICHTING</field>
-                    <field name="UNIT">NONE</field>
-                  </block>
-                </value>
-                <next>
-                  <block type="simple_condition" id="condDetentionStatus">
+              <block type="complex_condition" id="complexCondFacilityType">
+                <field name="MULTIPLICITY">ANY</field>
+                <statement name="CONDITIONS">
+                  <block type="simple_condition" id="condFacilityTypePenitentiair">
                     <value name="LEFT">
-                      <block type="fact_reference" id="factDetentionStatus">
+                      <block type="fact_reference" id="factFacilityTypePenitentiair">
                         <field name="OBJECT_TYPE">BURGER</field>
                         <value name="ATTRIBUTE">
-                          <block type="attribute" id="attrDetentionStatus">
-                            <field name="ATTRIBUTE_NAME">DETENTION_STATUS</field>
+                          <block type="attribute" id="attrFacilityTypePenitentiair">
+                            <field name="ATTRIBUTE_NAME">FACILITY_TYPE</field>
                           </block>
                         </value>
                       </block>
                     </value>
                     <field name="OPERATOR">EQUALS</field>
                     <value name="RIGHT">
-                      <block type="literal" id="literalIngesloten">
-                        <field name="VALUE">INGESLOTEN</field>
+                      <block type="literal" id="literalPenitentiair">
+                        <field name="VALUE">PENITENTIAIRE_INRICHTING</field>
                         <field name="UNIT">NONE</field>
                       </block>
                     </value>
+                    <next>
+                      <block type="simple_condition" id="condFacilityTypeHuis">
+                        <value name="LEFT">
+                          <block type="fact_reference" id="factFacilityTypeHuis">
+                            <field name="OBJECT_TYPE">BURGER</field>
+                            <value name="ATTRIBUTE">
+                              <block type="attribute" id="attrFacilityTypeHuis">
+                                <field name="ATTRIBUTE_NAME">FACILITY_TYPE</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <field name="OPERATOR">EQUALS</field>
+                        <value name="RIGHT">
+                          <block type="literal" id="literalHuisBewaring">
+                            <field name="VALUE">HUIS_VAN_BEWARING</field>
+                            <field name="UNIT">NONE</field>
+                          </block>
+                        </value>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+                <next>
+                  <block type="complex_condition" id="complexCondDetentionStatus">
+                    <field name="MULTIPLICITY">ANY</field>
+                    <statement name="CONDITIONS">
+                      <block type="simple_condition" id="condDetentionStatusIngesloten">
+                        <value name="LEFT">
+                          <block type="fact_reference" id="factDetentionStatusIngesloten">
+                            <field name="OBJECT_TYPE">BURGER</field>
+                            <value name="ATTRIBUTE">
+                              <block type="attribute" id="attrDetentionStatusIngesloten">
+                                <field name="ATTRIBUTE_NAME">DETENTION_STATUS</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <field name="OPERATOR">EQUALS</field>
+                        <value name="RIGHT">
+                          <block type="literal" id="literalIngesloten">
+                            <field name="VALUE">INGESLOTEN</field>
+                            <field name="UNIT">NONE</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="simple_condition" id="condDetentionStatusTijdelijk">
+                            <value name="LEFT">
+                              <block type="fact_reference" id="factDetentionStatusTijdelijk">
+                                <field name="OBJECT_TYPE">BURGER</field>
+                                <value name="ATTRIBUTE">
+                                  <block type="attribute" id="attrDetentionStatusTijdelijk">
+                                    <field name="ATTRIBUTE_NAME">DETENTION_STATUS</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <field name="OPERATOR">EQUALS</field>
+                            <value name="RIGHT">
+                              <block type="literal" id="literalTijdelijkAfwezig">
+                                <field name="VALUE">TIJDELIJK_AFWEZIG</field>
+                                <field name="UNIT">NONE</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
                   </block>
                 </next>
               </block>

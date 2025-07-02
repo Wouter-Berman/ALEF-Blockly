@@ -199,6 +199,14 @@ javascript.javascriptGenerator.forBlock['attribute'] = function (block) {
     TOTAAL_TE_BETALEN_BELASTING: 'de totaal te betalen belasting',
     AANTAL_PASSAGIERS: 'het aantal passagiers',
     TREINMILES: 'de treinmiles',
+    FACILITY_TYPE: 'het type inrichting',
+    DETENTION_STATUS: 'de detentiestatus',
+    HOOGTE_TOESLAG: 'de hoogte van de toeslag',
+    POLISNUMMER_ZORGVERZEKERING: 'het polisnummer zorgverzekering',
+    INCOME: 'het inkomen',
+    PARTNER_INCOME: 'het partnerinkomen',
+    STANDAARDPREMIE: 'de standaardpremie',
+    WOONLAND: 'het woonland',
   };
 
   return [attributeNameMap[attributeName], Blockly.JavaScript.ORDER_ATOMIC];
@@ -219,6 +227,10 @@ javascript.javascriptGenerator.forBlock['characteristic'] = function (block) {
       'een passagier waarvoor het lage tarief voor belasting op basis van afstand van toepassing is',
     PASSAGIER_HOGE_TARIEF:
       'een passagier waarvoor het hoge tarief voor belasting op basis van afstand van toepassing is',
+    IS_INCARCERATED: 'gedetineerd',
+    VERZEKERDE_VOLGENS_ZVW: 'verzekerd volgens ZVW',
+    HEEFT_PARTNER: 'heeft partner',
+    VERZEKERDE_ZORGTOESLAG: 'verzekerd voor zorgtoeslag',
   };
 
   return [
