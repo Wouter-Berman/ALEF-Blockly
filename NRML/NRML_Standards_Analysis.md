@@ -6,6 +6,76 @@ NRML (Normalized Rule Model Language) is a JSON-based format for describing busi
 
 ## 1. Nederlandse Overheidsstandaarden (Dutch Government Standards)
 
+### 1.0 regels.overheid.nl Methoden
+
+**Overview**: Het Nederlandse platform voor standaardisering van regelbeheer documenteert verschillende methoden voor regelspecificatie.
+
+**Belangrijkste methoden**:
+
+#### FLINT (Formal Language for the Interpretation of Normative Texts)
+
+- **Doel**: Expliciete taal voor het vastleggen van interpretaties van juridische bronnen
+- **Aanpak**: Protocol voor het uitvoeren van normatieve taken
+- **Focus**: Interpretatie en uitvoerbaarheid van juridische teksten
+- **Uniek**: Scheiding tussen brontekst en interpretatie
+
+#### RuleSpeak®
+
+- **Doel**: Richtlijnen voor bedrijfsvriendelijke en precieze regelformulering
+- **Aanpak**: Geen programmeertaal maar formuleringsprincipes
+- **Focus**: Business-friendly communicatie van regels
+- **Standaard**: OMG SBVR (Semantics of Business Vocabulary and Business Rules)
+
+#### Avola
+
+- **Doel**: Platform voor beslisbomen en regelmanagement
+- **Aanpak**: Visuele modellering van beslissingslogica
+- **Focus**: Low-code/no-code voor business users
+- **Nederlands**: Ontwikkeld door Nederlands bedrijf
+
+#### Blawx
+
+- **Doel**: User-friendly expert system voor juridische redeneringen
+- **Aanpak**: Visuele programmering (Blockly-gebaseerd zoals ALEF-Blockly!)
+- **Focus**: Toegankelijkheid voor niet-programmeurs
+- **Open Source**: MIT licentie
+
+#### Semantisch HTML-vocabulaire
+
+- **Doel**: RDF-gebaseerde representatie van regelinformatie
+- **Aanpak**: HTML documenten met semantische annotaties
+- **Focus**: Machine-leesbare publicatie van regels
+- **Standaard**: Linked Data principes
+
+#### USoft
+
+- **Doel**: Model-driven development platform
+- **Aanpak**: Declaratieve regelspecificatie
+- **Focus**: Enterprise applicaties
+- **Commercieel**: Propriëtaire oplossing
+
+#### DataLex
+
+- **Doel**: Legal knowledge-based systems
+- **Aanpak**: Rule-based reasoning engine
+- **Focus**: Juridische expertsystemen
+- **Australisch**: AustLII initiatief
+
+**Vergelijking met NRML**:
+
+- **FLINT's interpretatie-laag**: NRML zou een FLINT-interpretatie kunnen serialiseren
+- **RuleSpeak principes**: NRML zou RuleSpeak richtlijnen kunnen volgen voor leesbaarheid
+- **Blawx visualisatie**: Beiden gebruiken Blockly - potentie voor integratie
+- **Semantisch vocabulaire**: NRML mist RDF/Linked Data features
+- **Avola's beslisbomen**: NRML's rule groups zouden decision trees kunnen ondersteunen
+
+**Lessen voor NRML**:
+
+1. FLINT's expliciete interpretatie-model toevoegen
+2. RDF/JSON-LD support voor semantische interoperabiliteit
+3. Beslisboom visualisatie mogelijkheden
+4. Integratie met Blawx voor visuele authoring
+
 ### 1.1 BWB (Basis Wetten Bestand) XML Schema
 
 **Overview**: The Dutch government's main XML-based system for storing and distributing legislation.
@@ -353,6 +423,8 @@ NRML occupies a unique position as:
 2. **Developer-Friendly**: JSON format appeals to modern developers
 3. **Domain-Specific**: Focused on business rules rather than general legal documents
 4. **Pragmatic**: Emphasizes practical implementation over theoretical completeness
+5. **Complementary to FLINT**: Where FLINT captures interpretations, NRML executes them
+6. **Blockly-Compatible**: Like Blawx, leverages visual programming for accessibility
 
 ## Recommendations for NRML Evolution
 
@@ -362,6 +434,9 @@ NRML occupies a unique position as:
 - Implement CNL layer for non-technical users (inspired by RegelSpraak)
 - Adopt ELI identifiers for legal references
 - Include provenance and trust mechanisms (from POWDER)
+- Add FLINT interpretation references
+- Support RDF/JSON-LD for semantic web compatibility
+- Integrate with Blawx for visual rule authoring
 
 ### 2. **Medium-term Development**
 
