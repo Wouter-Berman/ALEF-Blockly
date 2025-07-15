@@ -1426,7 +1426,7 @@
                     "$ref": "#/objectTypes/natuurlijkPersoon"
                   },
                   "property": {
-                    "$ref": "#/objectTypes/natuurlijkPersoon/properties/passagierWaarvoor ```hetHogeTariefVoorBelastingOpBasisVanAfstandVanToepassingIs"
+                    "$ref": "#/objectTypes/natuurlijkPersoon/properties/passagierWaarvoorHetHogeTariefVoorBelastingOpBasisVanAfstandVanToepassingIs"
                   }
                 }
               },
@@ -2167,9 +2167,7 @@
                 },
                 "subject": {
                   "type": "role",
-                  "ref": {
-                    "$ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
-                  }
+                  "ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
                 }
               },
               "target": {
@@ -2181,9 +2179,7 @@
                   "role": "passagiers met recht op treinmiles",
                   "ofSubject": {
                     "type": "role",
-                    "ref": {
-                      "$ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
-                    }
+                    "ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
                   }
                 }
               },
@@ -2199,9 +2195,7 @@
                   },
                   "subject": {
                     "type": "role",
-                    "ref": {
-                      "$ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
-                    }
+                    "ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
                   }
                 }
               }
@@ -2214,9 +2208,7 @@
                 },
                 "subject": {
                   "type": "role",
-                  "ref": {
-                    "$ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
-                  }
+                  "ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
                 }
               },
               "target": {
@@ -2228,9 +2220,7 @@
                   "role": "passagiers met recht op treinmiles",
                   "ofSubject": {
                     "type": "role",
-                    "ref": {
-                      "$ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
-                    }
+                    "ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
                   }
                 }
               },
@@ -2263,9 +2253,7 @@
                   },
                   "subject": {
                     "type": "role",
-                    "ref": {
-                      "$ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
-                    }
+                    "ref": "#/factTypes/verdelingContingentTreinmilesOverPassagiers/roles/0"
                   }
                 }
               }
