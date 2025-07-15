@@ -1,0 +1,86 @@
+Objecttype de vlucht
+de	belaste reis	kenmerk
+de	onbelaste reis	kenmerk
+de	rondvlucht	kenmerk
+is	klimaatneutraal	kenmerk (bijvoeglijk)
+de	luchthaven van vertrek	Luchthavens
+de	luchthaven van bestemming	Luchthavens
+de	datum van de vlucht	Datum in dagen
+de	afstand tot bestemming	Numeriek ( geheel getal ) met eenheid km
+de	bereikbaar per trein	Boolean
+de	reisduur per trein	Numeriek ( geheel getal ) met eenheid minuut
+het	aantal passagiers	Numeriek ( geheel getal )
+de	totale belasting op basis van afstand	Bedrag
+de	totale belasting op basis van reisduur	Bedrag
+de	totaal te betalen belasting	Bedrag
+
+Objecttype de natuurlijk persoon (bezield)
+de	passagier waarvoor het lage tarief voor belasting op basis van afstand van toepassing is	kenmerk
+de	passagier waarvoor het hoge tarief voor belasting op basis van afstand van toepassing is	kenmerk
+het	recht op duurzaamheidskorting	kenmerk (bezittelijk)
+het	identificatienummer	Numeriek ( geheel getal )
+de	geboortedatum	Datum in dagen
+de	leeftijd	Numeriek ( geheel getal ) met eenheid jr
+het	burgerservicenummer	Tekst
+de	belasting op basis van afstand (mv: belastingen op basis van afstand)	Bedrag
+de	belasting op basis van reisduur (mv: belastingen op basis van reisduur)	Bedrag
+de	te betalen belasting	Bedrag
+de	provincie	Provincies
+de	woonregiofactor	Numeriek ( geheel getal )
+de	treinmiles (mv: treinmiles)	Numeriek ( geheel getal )
+het	maximaal aantal te ontvangen treinmiles	Numeriek ( geheel getal )
+
+Objecttype het contingent treinmiles
+het	totaal aantal treinmiles	Numeriek ( geheel getal )
+het	aantal treinmiles op basis van aantal passagiers	Numeriek ( geheel getal )
+het	restant na verdeling	Numeriek ( geheel getal )
+
+Objecttype de uitworpmelding
+het	type	Type uitworp
+de	toelichting	Tekst
+
+Feittype Vlucht van natuurlijke personen
+de	reis	vlucht
+de	passagier (mv: passagiers)	natuurlijk persoon
+één reis betreft de verplaatsing van meerdere passagiers
+
+Feittype reis met contingent treinmiles
+de	reis met treinmiles	vlucht
+het	vastgesteld contingent treinmiles	contingent treinmiles
+één reis met treinmiles heeft één vastgesteld contingent treinmiles
+
+Feittype verdeling contingent treinmiles over passagiers
+het	te verdelen contingent treinmiles	contingent treinmiles
+de	passagier met recht op treinmiles (mv: passagiers met recht op treinmiles)	natuurlijk persoon
+één te verdelen contingent treinmiles wordt verdeeld over meerdere passagiers met recht op treinmiles
+
+Feittype redenen uitworp van vlucht
+de	vlucht met gegevens	vlucht
+de	reden uitworp (mv: redenen uitworp)	uitworpmelding
+één vlucht met gegevens heeft meerdere redenen uitworp
+
+Parameter het PERCENTAGE REISDUUR EERSTE SCHIJF : Percentage ( geheel getal )
+Parameter het PERCENTAGE REISDUUR TWEEDE SCHIJF : Percentage ( geheel getal )
+Parameter het PERCENTAGE REISDUUR DERDE SCHIJF : Percentage ( geheel getal )
+Parameter de BOVENGRENS REISDUUR EERSTE SCHIJF : Numeriek ( geheel getal ) met eenheid u
+Parameter de BOVENGRENS REISDUUR TWEEDE SCHIJF : Numeriek ( geheel getal ) met eenheid u
+Parameter de BOVENGRENS AFSTAND EERSTE SCHIJF : Numeriek ( geheel getal ) met eenheid km
+Parameter de BOVENGRENS AFSTAND TWEEDE SCHIJF : Numeriek ( geheel getal ) met eenheid km
+Parameter het LAGE BASISTARIEF EERSTE SCHIJF : Bedrag
+Parameter het LAGE BASISTARIEF TWEEDE SCHIJF : Bedrag
+Parameter het HOGE BASISTARIEF EERSTE SCHIJF : Bedrag
+Parameter het HOGE BASISTARIEF TWEEDE SCHIJF : Bedrag
+Parameter het LAGE TARIEF VERMINDERING EERSTE SCHIJF : Bedrag per kilometer
+Parameter het LAGE TARIEF VERMINDERING TWEEDE SCHIJF : Bedrag per kilometer
+Parameter het HOGE TARIEF VERMINDERING EERSTE SCHIJF : Bedrag per kilometer
+Parameter het HOGE TARIEF VERMINDERING TWEEDE SCHIJF : Bedrag per kilometer
+Parameter het AANTAL TREINMILES PER PASSAGIER VOOR CONTINGENT : Numeriek ( geheel getal )
+Parameter het BASISCONTINGENT TREINMILES PER VLUCHT : Numeriek ( geheel getal )
+Parameter het MAXIMUM AANTAL TREINMILES VOOR PASSAGIERS JONGER DAN 65 : Numeriek ( geheel getal )
+Parameter het MAXIMUM AANTAL TREINMILES VOOR PASSAGIERS VAN 65 JAAR OF OUDER : Numeriek ( geheel getal )
+Parameter de KORTING VOOR KLIMAATNEUTRALE VLUCHT : Bedrag
+
+// DOMEINEN
+Domein Bedrag is van het type Numeriek ( getal met 2 decimalen ) met eenheid €
+
+Domein Bedrag per kilometer is van het type Numeriek ( getal met 2 decimalen ) met eenheid € / km
