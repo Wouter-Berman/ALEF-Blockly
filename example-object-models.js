@@ -3,10 +3,10 @@
  * Dit bestand bevat voorgedefinieerde objectmodellen die in de editor geladen kunnen worden
  */
 
-// Voorbeeld objectmodel definities in XML formaat
+// Voorbeeld objectmodel definities in XML formaat (compatible with all Blockly versions)
 const exampleObjectModels = {
   // Vlucht objectmodel voorbeeld
-  "flight_object_model_example": `
+  flight_object_model_example: `
     <xml xmlns="https://developers.google.com/blockly/xml">
       <block type="object_model" id="modelVlucht" x="20" y="20">
         <field name="MODEL_NAME">Vlucht</field>
@@ -232,27 +232,85 @@ const exampleObjectModels = {
         </statement>
       </block>
     </xml>
-  `
+  `,
 };
 
 // Functie om een voorbeeld objectmodel te laden
 function loadExampleObjectModel(modelName) {
   if (exampleObjectModels[modelName]) {
     const xml = exampleObjectModels[modelName];
-    
+
     try {
-      const xmlDom = Blockly.Xml.textToDom(xml);
-      
-      // Gebruik de objectmodel werkruimte
-      workspaceObjectModel.clear();
-      Blockly.Xml.domToWorkspace(xmlDom, workspaceObjectModel);
-      
-      // Genereer objectmodel tekst
-      const code = Blockly.JavaScript.workspaceToCode(workspaceObjectModel);
+      // Get the object model workspace
+      const workspace = window.workspaceObjectModel;
+      if (!workspace) {
+        console.error('Object model workspace not available');
+        return;
+      }
+
+      // Clear workspace
+      workspace.clear();
+
+      // Try multiple loading methods for compatibility
+      let loaded = false;
+
+      // Method 1: Try modern Blockly.utils.xml (newest versions)
+      if (Blockly.utils && Blockly.utils.xml && Blockly.utils.xml.textToDom) {
+        try {
+          const xmlDom = Blockly.utils.xml.textToDom(xml);
+          Blockly.Xml.domToWorkspace(xmlDom, workspace);
+          loaded = true;
+        } catch (e) {
+          console.log('Method 1 failed, trying method 2:', e.message);
+        }
+      }
+
+      // Method 2: Try older Blockly.Xml.textToDom
+      if (!loaded && Blockly.Xml && Blockly.Xml.textToDom) {
+        try {
+          const xmlDom = Blockly.Xml.textToDom(xml);
+          Blockly.Xml.domToWorkspace(xmlDom, workspace);
+          loaded = true;
+        } catch (e) {
+          console.log('Method 2 failed, trying method 3:', e.message);
+        }
+      }
+
+      // Method 3: Try DOMParser as fallback
+      if (!loaded) {
+        try {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xml, 'text/xml');
+          if (xmlDoc.documentElement && !xmlDoc.querySelector('parsererror')) {
+            Blockly.Xml.domToWorkspace(xmlDoc.documentElement, workspace);
+            loaded = true;
+          }
+        } catch (e) {
+          console.log('Method 3 failed:', e.message);
+        }
+      }
+
+      if (!loaded) {
+        console.error('All loading methods failed');
+        alert(
+          'Could not load example object model. Please check console for details.'
+        );
+        return;
+      }
+
+      // Generate object model text
+      const code = Blockly.JavaScript.workspaceToCode(workspace);
       document.getElementById('outputObjectModel').textContent = code;
+
+      console.log('Successfully loaded example object model:', modelName);
     } catch (err) {
       console.error('Fout bij het laden van het voorbeeld objectmodel:', err);
       alert('Fout bij het laden van het voorbeeld objectmodel: ' + err.message);
     }
+  } else {
+    console.error('Example object model not found:', modelName);
   }
 }
+
+// Export the example loading function for use by main.js
+window.loadExampleObjectModel = loadExampleObjectModel;

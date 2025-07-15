@@ -9,7 +9,7 @@ let workspaceRules = Blockly.inject('blocklyDivRules', {
     spacing: 20,
     length: 3,
     colour: '#ccc',
-    snap: true
+    snap: true,
   },
   zoom: {
     controls: true,
@@ -17,9 +17,9 @@ let workspaceRules = Blockly.inject('blocklyDivRules', {
     startScale: 1.0,
     maxScale: 3,
     minScale: 0.3,
-    scaleSpeed: 1.2
+    scaleSpeed: 1.2,
   },
-  trashcan: true
+  trashcan: true,
 });
 
 let workspaceObjectModel = Blockly.inject('blocklyDivObjectModel', {
@@ -28,7 +28,7 @@ let workspaceObjectModel = Blockly.inject('blocklyDivObjectModel', {
     spacing: 20,
     length: 3,
     colour: '#ccc',
-    snap: true
+    snap: true,
   },
   zoom: {
     controls: true,
@@ -36,9 +36,9 @@ let workspaceObjectModel = Blockly.inject('blocklyDivObjectModel', {
     startScale: 1.0,
     maxScale: 3,
     minScale: 0.3,
-    scaleSpeed: 1.2
+    scaleSpeed: 1.2,
   },
-  trashcan: true
+  trashcan: true,
 });
 
 // Referenties opslaan
@@ -62,22 +62,32 @@ function generateCode() {
   } catch (error) {
     console.error('Fout bij het genereren van code:', error);
     if (currentWorkspaceType === 'rules') {
-      document.getElementById('outputRules').textContent = 'Fout bij het genereren van regeltekst: ' + error.message;
+      document.getElementById('outputRules').textContent =
+        'Fout bij het genereren van regeltekst: ' + error.message;
     } else {
-      document.getElementById('outputObjectModel').textContent = 'Fout bij het genereren van objectmodel: ' + error.message;
+      document.getElementById('outputObjectModel').textContent =
+        'Fout bij het genereren van objectmodel: ' + error.message;
     }
   }
 }
 
+// Debug functie om JSON serialisatie te testen
+function debugSerializedWorkspace() {
+  const state = Blockly.serialization.workspaces.save(currentWorkspace);
+  console.log('Current workspace state:', JSON.stringify(state, null, 2));
+}
+
 // Luisteraars toevoegen voor veranderingen in de werkruimtes
-workspaceRules.addChangeListener(function(event) {
-  if (event.type === Blockly.Events.BLOCK_CHANGE || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_MOVE) {
+workspaceRules.addChangeListener(function (event) {
+  if (
+    event.type === Blockly.Events.BLOCK_CHANGE ||
+    event.type === Blockly.Events.BLOCK_CREATE ||
+    event.type === Blockly.Events.BLOCK_DELETE ||
+    event.type === Blockly.Events.BLOCK_MOVE
+  ) {
     // Debounce de generatie
     clearTimeout(workspaceRules.ruleGenTimeout);
-    workspaceRules.ruleGenTimeout = setTimeout(function() {
+    workspaceRules.ruleGenTimeout = setTimeout(function () {
       if (currentWorkspaceType === 'rules') {
         generateCode();
       }
@@ -85,14 +95,16 @@ workspaceRules.addChangeListener(function(event) {
   }
 });
 
-workspaceObjectModel.addChangeListener(function(event) {
-  if (event.type === Blockly.Events.BLOCK_CHANGE || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_MOVE) {
+workspaceObjectModel.addChangeListener(function (event) {
+  if (
+    event.type === Blockly.Events.BLOCK_CHANGE ||
+    event.type === Blockly.Events.BLOCK_CREATE ||
+    event.type === Blockly.Events.BLOCK_DELETE ||
+    event.type === Blockly.Events.BLOCK_MOVE
+  ) {
     // Debounce de generatie
     clearTimeout(workspaceObjectModel.modelGenTimeout);
-    workspaceObjectModel.modelGenTimeout = setTimeout(function() {
+    workspaceObjectModel.modelGenTimeout = setTimeout(function () {
       if (currentWorkspaceType === 'objectModel') {
         generateCode();
       }
@@ -108,12 +120,12 @@ function showRulesWorkspace() {
   document.getElementById('objectModelTab').classList.remove('active');
   currentWorkspace = workspaceRules;
   currentWorkspaceType = 'rules';
-  
+
   // Resize Blockly werkruimte om rendering problemen te voorkomen
-  setTimeout(function() {
+  setTimeout(function () {
     Blockly.svgResize(workspaceRules);
   }, 10);
-  
+
   // Genereer code voor deze werkruimte
   generateCode();
 }
@@ -125,25 +137,29 @@ function showObjectModelWorkspace() {
   document.getElementById('objectModelTab').classList.add('active');
   currentWorkspace = workspaceObjectModel;
   currentWorkspaceType = 'objectModel';
-  
+
   // Resize Blockly werkruimte om rendering problemen te voorkomen
-  setTimeout(function() {
+  setTimeout(function () {
     Blockly.svgResize(workspaceObjectModel);
   }, 10);
-  
+
   // Genereer code voor deze werkruimte
   generateCode();
 }
 
 // Tab-knoppen event listeners toevoegen
-document.getElementById('rulesTab').addEventListener('click', showRulesWorkspace);
-document.getElementById('objectModelTab').addEventListener('click', showObjectModelWorkspace);
+document
+  .getElementById('rulesTab')
+  .addEventListener('click', showRulesWorkspace);
+document
+  .getElementById('objectModelTab')
+  .addEventListener('click', showObjectModelWorkspace);
 
 // Functie om een werkruimte op te slaan (bijgewerkt voor JSON serialisatie)
 function saveWorkspace() {
   try {
     let state, fileName;
-    
+
     if (currentWorkspaceType === 'rules') {
       state = Blockly.serialization.workspaces.save(workspaceRules);
       fileName = 'regel.json';
@@ -151,12 +167,12 @@ function saveWorkspace() {
       state = Blockly.serialization.workspaces.save(workspaceObjectModel);
       fileName = 'objectmodel.json';
     }
-    
+
     // Converteer het state-object naar een JSON-string
     const jsonText = JSON.stringify(state, null, 2);
-    
+
     // Maak een blob en downloadlink
-    const blob = new Blob([jsonText], {type: 'application/json'});
+    const blob = new Blob([jsonText], { type: 'application/json' });
     const a = document.createElement('a');
     a.download = fileName;
     a.href = URL.createObjectURL(blob);
@@ -172,16 +188,16 @@ function loadWorkspace() {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json';
-  
+
   input.onchange = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    
-    reader.onload = function(e) {
+
+    reader.onload = function (e) {
       try {
         // Parse de JSON-string naar een object
         const state = JSON.parse(e.target.result);
-        
+
         // Controleer welke werkruimte actief is en laad daarin
         if (currentWorkspaceType === 'rules') {
           workspaceRules.clear();
@@ -190,7 +206,7 @@ function loadWorkspace() {
           workspaceObjectModel.clear();
           Blockly.serialization.workspaces.load(state, workspaceObjectModel);
         }
-        
+
         // Genereer code
         generateCode();
       } catch (err) {
@@ -198,15 +214,17 @@ function loadWorkspace() {
         console.error(err);
       }
     };
-    
+
     reader.readAsText(file);
   };
-  
+
   input.click();
 }
 
 // Event listeners voor knoppen
-document.getElementById('generateButton').addEventListener('click', generateCode);
+document
+  .getElementById('generateButton')
+  .addEventListener('click', generateCode);
 document.getElementById('saveButton').addEventListener('click', saveWorkspace);
 document.getElementById('loadButton').addEventListener('click', loadWorkspace);
 
@@ -231,56 +249,69 @@ function createSampleObjectModel() {
 // Registreer callbacks voor de voorbeeld knoppen
 function registerButtonCallbacks() {
   const ruleCallbacks = {
-    loadDistanceInitExample: function() {
-      if (typeof loadExampleRule === 'function' && currentWorkspaceType === 'rules') {
+    loadDistanceInitExample: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
         loadExampleRule('distance_init_example');
       }
     },
-    loadTaxCalculationExample: function() {
-      if (typeof loadExampleRule === 'function' && currentWorkspaceType === 'rules') {
+    loadTaxCalculationExample: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
         loadExampleRule('tax_calculation_example');
       }
     },
-    loadComplianceRuleExample: function() {
-      if (typeof loadExampleRule === 'function' && currentWorkspaceType === 'rules') {
+    loadComplianceRuleExample: function () {
+      if (
+        typeof loadExampleRule === 'function' &&
+        currentWorkspaceType === 'rules'
+      ) {
         loadExampleRule('compliance_rule_example');
       }
-    }
+    },
   };
-  
+
   const objectModelCallbacks = {
-    loadFlightObjectModelExample: function() {
-      if (typeof loadExampleObjectModel === 'function' && currentWorkspaceType === 'objectModel') {
+    loadFlightObjectModelExample: function () {
+      if (
+        typeof loadExampleObjectModel === 'function' &&
+        currentWorkspaceType === 'objectModel'
+      ) {
         loadExampleObjectModel('flight_object_model_example');
       }
-    }
+    },
   };
-  
+
   // Registreer alle callbacks voor regels
   for (const key in ruleCallbacks) {
     workspaceRules.registerButtonCallback(key, ruleCallbacks[key]);
   }
-  
+
   // Registreer alle callbacks voor objectmodellen
   for (const key in objectModelCallbacks) {
     workspaceObjectModel.registerButtonCallback(key, objectModelCallbacks[key]);
   }
-  
+
   // Sla de functies op voor gebruik buiten deze scope
-  window.loadFlightObjectModelExample = objectModelCallbacks.loadFlightObjectModelExample;
+  window.loadFlightObjectModelExample =
+    objectModelCallbacks.loadFlightObjectModelExample;
 }
 
 // Initialisatie bij het laden van de pagina
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
   // Registreer button callbacks
   registerButtonCallbacks();
-  
+
   // Initialiseer actieve werkruimte
   showRulesWorkspace();
-  
+
   // Genereer initiële code
   generateCode();
-  
+
   // Maak een voorbeeld objectmodel aan
   createSampleObjectModel();
 });

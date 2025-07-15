@@ -7,7 +7,12 @@
   "properties": {
     "objectModel": {
       "type": "object",
-      "required": ["objectTypes", "relationshipTypes", "typeDefinitions", "parameters"],
+      "required": [
+        "objectTypes",
+        "relationshipTypes",
+        "typeDefinitions",
+        "parameters"
+      ],
       "properties": {
         "objectTypes": {
           "type": "array",
@@ -124,7 +129,7 @@
         "attributeType": {
           "oneOf": [
             {
-              "$ref": "#/definitions/dataType" 
+              "$ref": "#/definitions/dataType"
             },
             {
               "type": "string"
@@ -291,7 +296,7 @@
         "parameterType": {
           "oneOf": [
             {
-              "$ref": "#/definitions/dataType" 
+              "$ref": "#/definitions/dataType"
             },
             {
               "type": "string"
